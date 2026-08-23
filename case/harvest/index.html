@@ -223,7 +223,7 @@ meant to imply "it is gone forever", and the ledger had visible holes.</p>
 <h2>Three properties of the raw logs that make naive counting wrong</h2>
 <p>Before anything could be scanned, the logs had to be normalised, because measuring
 them directly produces confident nonsense. Three things were measured and folded:</p>
-<table>
+<div class="scroll"><table>
 <thead>
 <tr>
 <th>Property</th>
@@ -248,7 +248,7 @@ them directly produces confident nonsense. Three things were measured and folded
 <td>tool results counted as human speech</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>The third one bites hardest. Inside a role agent's log, <code>role: user</code> is the
 orchestrator briefing it — so counting naively turns <em>my instruction to an agent</em> into
 <em>a human correction</em>, which is close to the opposite of what it means. That happened
@@ -278,7 +278,7 @@ view makes it a defect.</p>
 had become hard to read — that you could not understand one on its own, and the prose
 had gone stiff.</p>
 <p>Rather than argue about taste, the 49 records in scope were measured:</p>
-<table>
+<div class="scroll"><table>
 <thead>
 <tr>
 <th></th>
@@ -298,7 +298,7 @@ had gone stiff.</p>
 <td><strong>4.8</strong></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>The cause was not carelessness. An earlier rule already said that anything a human
 approves must open with a summary for the approver — and when that rule was written, a
 table of exceptions judged ADRs to be <em>already compliant</em>, because their decision
@@ -335,7 +335,7 @@ regression — roughly a doubling, in about three months.</p>
 implies otherwise is worse than no dashboard. The output here is candidates for a
 person to read, not a verdict.</p>
 <footer>
-  <span>Operating data generated 2026-08-23 22:42.</span>
+  <span>Operating data generated 2026-08-23 22:45.</span>
   <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
   <span>Primary records — ADRs and friction logs — are written in Japanese.</span>

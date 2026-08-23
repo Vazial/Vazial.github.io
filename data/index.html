@@ -242,6 +242,19 @@ footer a { color: var(--muted); }
 .roles-row .fill { background: var(--accent); height: 100%; opacity: 0.85; display: block; }
 .roles-row .name b { font-weight: 600; }
 .roles-row .name em { font-style: normal; color: var(--muted); }
+
+/* 狭い画面では3列が入らない。名前と数値を1行目、バーを2行目に落とす。
+   横並びのままだと 1fr が 0 に潰れてバーが消え、ページが横に溢れる。 */
+@media (max-width: 34rem) {
+  .tape-row, .roles-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "name count" "bar bar";
+    gap: 0.35rem 0.8rem;
+  }
+  .tape-row .name, .roles-row .name { grid-area: name; }
+  .tape-row .count, .roles-row .count { grid-area: count; }
+  .tape-row .tape, .roles-row .track { grid-area: bar; }
+}
 </style>
 
 <header>
@@ -261,7 +274,7 @@ footer a { color: var(--muted); }
 
 <section>
   <h2>Scale</h2>
-  <div class="figures"><div class="figure"><b>5</b><span>projects</span></div><div class="figure"><b>67</b><span>sessions</span></div><div class="figure"><b>401</b><span>commits</span></div><div class="figure"><b>196</b><span>pull requests</span></div><div class="figure"><b>838</b><span>human prompts</span></div></div>
+  <div class="figures"><div class="figure"><b>5</b><span>projects</span></div><div class="figure"><b>67</b><span>sessions</span></div><div class="figure"><b>401</b><span>commits</span></div><div class="figure"><b>196</b><span>pull requests</span></div><div class="figure"><b>839</b><span>human prompts</span></div></div>
   <p class="note">
     “Human prompts” counts only what a person actually typed. Tool results and
     notifications travel the same channel but are not speech, so they are excluded —
@@ -272,12 +285,12 @@ footer a { color: var(--muted); }
 <section>
   <h2>Does verification act as a gate?</h2>
   <p>
-    98.0% of 492 runs passed, with
+    98.0% of 493 runs passed, with
     7 failures. A high pass rate proves nothing on its own. What matters
     is that checks <strong>do</strong> fail: a gate that has never stopped anything
     is decoration.
   </p>
-  <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:99.29%"></i><i class="ng" style="width:0.71%"></i></span><span class="count">280 runs, 2 failed</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:96.05%"></i><i class="ng" style="width:3.95%"></i></span><span class="count">76 runs, 3 failed</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">40 runs</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:97.37%"></i><i class="ng" style="width:2.63%"></i></span><span class="count">38 runs, 1 failed</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:89.66%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">29 runs</span></div><div class="tape-row"><span class="name">CI reservation-system</span><span class="tape"><i class="ok" style="width:94.44%"></i><i class="ng" style="width:5.56%"></i></span><span class="count">18 runs, 1 failed</span></div><div class="tape-row"><span class="name">CI reservation-frontend</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">8 runs</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">3 runs</span></div></div>
+  <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:99.29%"></i><i class="ng" style="width:0.71%"></i></span><span class="count">281 runs, 2 failed</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:96.05%"></i><i class="ng" style="width:3.95%"></i></span><span class="count">76 runs, 3 failed</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">40 runs</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:97.37%"></i><i class="ng" style="width:2.63%"></i></span><span class="count">38 runs, 1 failed</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:89.66%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">29 runs</span></div><div class="tape-row"><span class="name">CI reservation-system</span><span class="tape"><i class="ok" style="width:94.44%"></i><i class="ng" style="width:5.56%"></i></span><span class="count">18 runs, 1 failed</span></div><div class="tape-row"><span class="name">CI reservation-frontend</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">8 runs</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">3 runs</span></div></div>
   <p class="note">
     <code>L0 govlint</code> checks the rules themselves and runs on every pull request
     across all projects.
@@ -313,8 +326,8 @@ footer a { color: var(--muted); }
       <tr><th>Measure</th><th>Value</th><th>Detail</th></tr>
       <tr>
         <td>Pull requests merged</td>
-        <td>94.4%</td>
-        <td class="note">185 merged</td>
+        <td>94.9%</td>
+        <td class="note">186 merged</td>
       </tr>
       <tr>
         <td>Open to merge, median</td>
@@ -362,7 +375,7 @@ footer a { color: var(--muted); }
 </section>
 
 <footer>
-  <span>Operating data generated 2026-08-23 22:42.</span>
+  <span>Operating data generated 2026-08-23 22:45.</span>
   <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
   <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
