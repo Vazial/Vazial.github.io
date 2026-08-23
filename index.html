@@ -227,7 +227,7 @@ footer code {
       <span class="eyebrow">規模</span>
       <h2>どれだけ回したか</h2>
     </header>
-    <div class="figures"><div class="figure"><b>5</b><span>プロジェクト</span></div><div class="figure"><b>57</b><span>セッション</span></div><div class="figure"><b>371</b><span>コミット</span></div><div class="figure"><b>177</b><span>プルリクエスト</span></div><div class="figure"><b>772</b><span>人間の指示</span></div></div>
+    <div class="figures"><div class="figure"><b>5</b><span>プロジェクト</span></div><div class="figure"><b>57</b><span>セッション</span></div><div class="figure"><b>374</b><span>コミット</span></div><div class="figure"><b>179</b><span>プルリクエスト</span></div><div class="figure"><b>784</b><span>人間の指示</span></div></div>
     <p class="note">
       「人間の指示」は実際にタイプしたプロンプトのみ。ツールの実行結果や通知は
       同じ経路を通るが、人間の発話ではないので数えていません。
@@ -240,11 +240,11 @@ footer code {
       <h2>ゲートとして効いているか</h2>
     </header>
     <p>
-      合格率 <strong>97.7%</strong>（473 run 中
+      合格率 <strong>97.7%</strong>（477 run 中
       7 件が失敗）。合格率が高いこと自体は主張になりません——
       <strong>落ちる検証が実在すること</strong>が、ゲートが飾りでない証拠です。
     </p>
-    <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:99.27%"></i><i class="ng" style="width:0.73%"></i></span><span class="count">273 run / 失敗 2</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:94.20%"></i><i class="ng" style="width:4.35%"></i></span><span class="count">69 run / 失敗 3</span></div><div class="tape-row"><span class="name">CI reservation-system</span><span class="tape"><i class="ok" style="width:97.06%"></i><i class="ng" style="width:2.94%"></i></span><span class="count">34 run / 失敗 1</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:96.15%"></i><i class="ng" style="width:3.85%"></i></span><span class="count">26 run / 失敗 1</span></div><div class="tape-row"><span class="name">CI reservation-frontend</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">25 run</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">23 run</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:85.71%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">21 run</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">2 run</span></div></div>
+    <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:99.27%"></i><i class="ng" style="width:0.73%"></i></span><span class="count">275 run / 失敗 2</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:95.77%"></i><i class="ng" style="width:4.23%"></i></span><span class="count">71 run / 失敗 3</span></div><div class="tape-row"><span class="name">CI reservation-system</span><span class="tape"><i class="ok" style="width:96.88%"></i><i class="ng" style="width:3.12%"></i></span><span class="count">32 run / 失敗 1</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:96.15%"></i><i class="ng" style="width:3.85%"></i></span><span class="count">26 run / 失敗 1</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">24 run</span></div><div class="tape-row"><span class="name">CI reservation-frontend</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">24 run</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:82.61%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">23 run</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">2 run</span></div></div>
     <p class="note">
       <code>L0 govlint</code> は規程そのものへの検査で、全プロジェクトのPRに掛かります。
     </p>
@@ -259,11 +259,11 @@ footer code {
       各役割はコンテキストを分離した別のagentが担当します。テストを書く役は
       実装コードを読まず、監査役は独立に検算します。
     </p>
-    <div class="roles"><div class="roles-row"><span class="name"><b>契約</b> <em>architect</em></span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="count"> 66 回 ・ エラー 6.2%</span></div><div class="roles-row"><span class="name"><b>画面</b> <em>designer</em></span><span class="track"><span class="fill" style="width:6.1%"></span></span><span class="count">  4 回 ・ エラー 5.1%</span></div><div class="roles-row"><span class="name"><b>実装</b> <em>developer</em></span><span class="track"><span class="fill" style="width:69.7%"></span></span><span class="count"> 46 回 ・ エラー 3.5%</span></div><div class="roles-row"><span class="name"><b>テスト</b> <em>tester</em></span><span class="track"><span class="fill" style="width:31.8%"></span></span><span class="count"> 21 回 ・ エラー 2.2%</span></div><div class="roles-row"><span class="name"><b>監査</b> <em>reviewer</em></span><span class="track"><span class="fill" style="width:16.7%"></span></span><span class="count"> 11 回 ・ エラー 3.4%</span></div></div>
+    <div class="roles"><div class="roles-row"><span class="name"><b>契約</b> <em>architect</em></span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="count"> 67 回 ・ エラー 6.2%</span></div><div class="roles-row"><span class="name"><b>画面</b> <em>designer</em></span><span class="track"><span class="fill" style="width:6.0%"></span></span><span class="count">  4 回 ・ エラー 5.1%</span></div><div class="roles-row"><span class="name"><b>実装</b> <em>developer</em></span><span class="track"><span class="fill" style="width:68.7%"></span></span><span class="count"> 46 回 ・ エラー 3.5%</span></div><div class="roles-row"><span class="name"><b>テスト</b> <em>tester</em></span><span class="track"><span class="fill" style="width:31.3%"></span></span><span class="count"> 21 回 ・ エラー 2.2%</span></div><div class="roles-row"><span class="name"><b>監査</b> <em>reviewer</em></span><span class="track"><span class="fill" style="width:16.4%"></span></span><span class="count"> 11 回 ・ エラー 3.4%</span></div></div>
     <div class="caveat">
       <p>
         <strong>後段ほど起動が減っています。</strong>
-        契約 66 回に対して監査は
+        契約 67 回に対して監査は
         11 回で、規程どおりに監査まで回せていません。
       </p>
       <p class="note">
@@ -283,12 +283,12 @@ footer code {
         <tr><th>指標</th><th>値</th><th>内訳</th></tr>
         <tr>
           <td>PRマージ率</td>
-          <td class="num">93.8%</td>
-          <td class="note">166 本がマージ</td>
+          <td class="num">94.4%</td>
+          <td class="note">169 本がマージ</td>
         </tr>
         <tr>
           <td>作成からマージまで（中央値）</td>
-          <td class="num">0.4 h</td>
+          <td class="num">0.42 h</td>
           <td class="note">p90 12.91 h ・ 最大 521.98 h</td>
         </tr>
         <tr>
@@ -298,10 +298,10 @@ footer code {
         </tr>
         <tr>
           <td>手戻り率</td>
-          <td class="num">7.0%</td>
+          <td class="num">6.9%</td>
           <td class="note">
             fix / revert 25 件 ÷
-            接頭辞のある 358 コミット
+            接頭辞のある 361 コミット
             （規約遵守率 96%）
           </td>
         </tr>
@@ -331,7 +331,7 @@ footer code {
   </section>
 
   <footer>
-    <span>生成 2026-08-23 13:53</span>
+    <span>生成 2026-08-23 15:11</span>
     <span>出典: Claude Code セッションログ ・ <code>git log</code> ・ GitHub Actions</span>
   </footer>
 
