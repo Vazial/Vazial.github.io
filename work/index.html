@@ -1,4 +1,4 @@
-<title>Vazial — AI-driven development</title>
+<title>Work — Vazial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -190,58 +190,74 @@ footer {
 footer a { color: var(--muted); }
 </style>
 <div class="sheet">
-<nav class="nav"><a href="/" aria-current="page" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
-<p><span class="eyebrow">Backend engineer · Japan</span></p>
-<h1>I build the method, then measure whether I follow it</h1>
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/" aria-current="page">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
+<p><span class="eyebrow">Work</span></p>
+<h1>Four projects, and what each one was for</h1>
 <p class="lede">
-When implementation is delegated to AI agents, reading the output to check it stops
-working the moment there is any volume. So I put the guarantee of correctness in
-mechanised verification instead, narrowed human involvement to four approval points,
-and then — because a method nobody checks is just an opinion — wired the operating
-logs back in to measure whether the method is actually being followed.
+These are not four products. They are four different shapes of problem, used to find
+out where the method holds and where it tears. Each is labelled with what it actually
+is, because a study exercise presented as a running service is worse than either.
 </p>
-<p>The template is the work. The projects below exist to put it under load.</p>
-<h2>The bet</h2>
-<p>Reviewing AI output by hand does not scale, and it fails quietly: the reviewer gets
-tired before the code gets correct. The alternative is to decide what "correct" means
-up front, encode it as executable contracts, and let CI be the thing that says no.</p>
-<p>A person still approves four things, because these cannot be delegated to a machine:
-the <strong>contract</strong> (what correct means), the <strong>design skeleton</strong> (expensive to reverse),
-the <strong>step definitions</strong> (the mapping between prose scenarios and code), and
-<strong>changes to the rules themselves</strong> (a rule change cannot be self-certified).</p>
-<p>Everything else moves into five verification levels, from unit tests up to experience
-quality, with failures caught at the level closest to the machine.</p>
-<p>The rules live in the repository rather than here, because a portfolio page that
-restates them would drift away from them:
-<a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>.</p>
-<h2>What that produced</h2>
-<p>Over 2026-05-30 to 2026-08-23, across 5 projects:
-401 commits, 196 pull requests, and
-836 prompts actually typed by a person.
-Machine verification passed 98.0% of
-492 runs — and, more usefully, failed the rest.</p>
-<p>The numbers are regenerated daily from session logs, git history, and GitHub Actions.
-I did not type any of them. <a href="/data/">See the full set →</a></p>
-<h2>Where to look</h2>
-<p><strong><a href="/work/">Work →</a></strong>
-Four projects, each labelled with what it actually is — one running service, one
-heavily iterated build, and two study exercises. The labels matter more than the
-count.</p>
-<p><strong><a href="/case/reservation/">Case: a design procedure in Java →</a></strong>
-A meeting-room booking domain worked through EventStorming, aggregate boundaries and
-concurrency, then carried into Java 21 and Spring Boot with the layer boundaries
-enforced by tests rather than by convention. Built to practise the procedure, not to
-operate.</p>
-<p><strong><a href="/case/harvest/">Case: a loop that catches my own drift →</a></strong>
-Development friction is supposed to be logged as it happens. It isn't, reliably. So
-the session logs get scanned for the moments where things went wrong, and the results
-are handed back for review. The first thing it caught was a rule of mine breaking for
-the fourth time.</p>
-<h2>About me</h2>
-<p>Backend developer working in C#/.NET and Java, with a background in electronic
-circuits, embedded systems and VHDL. Currently moving from implementation toward
-design and architecture, which is what this whole body of work is for.</p>
-<p>Full background, skills and contact: <a href="https://github.com/Vazial">github.com/Vazial</a>.</p>
+<p>All four live inside
+<a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a> under
+<code>projects/</code>, alongside the rules they were built under.</p>
+<hr>
+<h2>The template itself</h2>
+<p>The language-agnostic foundation: eleven principles, five role agents with separated
+context, five verification levels, and 58 architecture decision records covering the
+governance itself. This is the piece worth reading first, and the only one I would
+call finished enough to reuse.</p>
+<p>The two case studies both come out of it —
+<a href="/case/reservation/">the design procedure</a> shows it applied to a domain,
+<a href="/case/harvest/">the feedback loop</a> shows it correcting itself.</p>
+<p><a href="https://github.com/Vazial/ai-driven-dev-template">Repository →</a></p>
+<hr>
+<h2>Session Radar <span class="tag live">Running</span></h2>
+<p>The only one of these that actually runs. Every morning at 08:00 JST a GitHub Actions
+schedule fires, pulls events from the connpass API, filters them against interest
+criteria held as YAML in the repository, and delivers a single digest to Discord. No
+screens, no persistent store; external I/O is limited to one fetch and one webhook,
+behind a <code>NotifierPort</code> so the delivery channel is replaceable.</p>
+<p>It went into real operation on 2026-08-23 and the schedule has been firing on its own
+since. Five ADRs. It is small on purpose — the interesting part is that the method
+produced something that survives contact with a live external API and keeps running
+without me.</p>
+<hr>
+<h2>Dining Radar <span class="tag wip">In progress</span></h2>
+<p>The most heavily worked project of the four, and the one that wore the method down
+hardest: 26 architecture decisions and 26 logged friction entries, which is roughly
+one recorded failure per decision. A Django pipeline for finding somewhere to eat
+within a bounded area.</p>
+<p>Still being improved, and not deployed. Its value here is the iteration count. Most of
+what I know about where the template chafes came from this project, including the
+decision to strip a real place name out of a public repository — and the follow-up
+finding that renaming the project did not remove the name from everywhere it had
+already spread.</p>
+<hr>
+<h2>Meeting room booking — backend <span class="tag study">Study exercise</span></h2>
+<p>Built to practise domain-driven design end to end, from EventStorming through
+aggregate boundaries, concurrency control and state modelling, into Java 21 and Spring
+Boot. Eight ADRs plus acceptance scenarios in Gherkin.</p>
+<p><strong>Not built out, and not intended to be operated.</strong> What it demonstrates is
+engineering practice rather than a product: the domain layer holds zero framework
+imports and a test enforces that, double-booking is verified against a real PostgreSQL
+constraint rather than a mock, and the acceptance suite is separated from the
+implementation by a DSL layer.</p>
+<p><a href="/case/reservation/">Read the case study →</a></p>
+<hr>
+<h2>Meeting room booking — frontend <span class="tag study">Study exercise</span></h2>
+<p>The companion to the above, and where the contract-first idea got its real test: the
+API types are generated from the OpenAPI document rather than hand-copied, so the
+frontend cannot silently drift from the contract. Each endpoint can be switched from
+mock to real backend independently, one operation at a time, which made it possible to
+close the loop on availability, booking and cancellation without a big-bang
+integration.</p>
+<p>88 unit tests, 9 Playwright end-to-end scenarios, 9 ADRs.</p>
+<hr>
+<h2>What is not here</h2>
+<p>Older repositories on my GitHub profile — puzzle solvers, exercise answers — are from
+learning and are not representative. Two current projects are private: a stock
+screener and a set of games built on this same template.</p>
 <footer>
   <span>Operating data generated 2026-08-23 22:38.</span>
   <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>

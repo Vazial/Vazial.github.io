@@ -1,0 +1,335 @@
+<title>A loop that catches my own drift</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
+<style>
+:root {
+  --paper:  #F2F3F0;
+  --raised: #FBFBF9;
+  --ink:    #1B2320;
+  --muted:  #6B7570;
+  --rule:   #D7DAD6;
+  --accent: #2F6F5E;
+  --alarm:  #9A3B2E;
+  --tape:   #E1E4E0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:  #141816;
+    --raised: #1B211E;
+    --ink:    #E4E8E3;
+    --muted:  #8A948E;
+    --rule:   #272E2A;
+    --accent: #5FAE96;
+    --alarm:  #CE7360;
+    --tape:   #262D29;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:  #141816;
+  --raised: #1B211E;
+  --ink:    #E4E8E3;
+  --muted:  #8A948E;
+  --rule:   #272E2A;
+  --accent: #5FAE96;
+  --alarm:  #CE7360;
+  --tape:   #262D29;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:focus-visible, .nav a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.sheet {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3.5rem) 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* 上部の帯。現在地を実線で示す */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  align-items: baseline;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.9rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+}
+.nav a { color: var(--muted); text-decoration: none; }
+.nav a:hover { color: var(--ink); }
+.nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.2rem;
+}
+.nav .home { color: var(--ink); font-weight: 500; margin-right: auto; }
+
+.eyebrow {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+h1 {
+  font-family: Fraunces, Georgia, serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0.4rem 0 0;
+}
+h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 600;
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin: 2.4rem 0 0;
+}
+h3 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 1.8rem 0 0;
+}
+
+p, ul, ol { margin: 0.9rem 0 0; max-width: 64ch; }
+li { margin-top: 0.3rem; }
+.lede { font-size: 1.08rem; }
+.note { color: var(--muted); font-size: 0.92rem; }
+
+blockquote {
+  margin: 1.4rem 0 0;
+  padding: 0.9rem 1.3rem;
+  background: var(--raised);
+  border-left: 2px solid var(--accent);
+  max-width: 64ch;
+}
+blockquote p { margin-top: 0; }
+blockquote p + p { margin-top: 0.7rem; }
+
+code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.86em;
+}
+pre {
+  background: var(--raised);
+  border: 1px solid var(--rule);
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin: 1.4rem 0 0;
+}
+pre code { font-size: inherit; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; margin: 1.4rem 0 0; }
+th, td {
+  text-align: left;
+  padding: 0.55rem 1rem 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+th {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+}
+.scroll { overflow-x: auto; }
+
+/* 状態のラベル。稼働中と学習用を取り違えさせない */
+.tag {
+  display: inline-block;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 0.1rem 0.45rem;
+  vertical-align: 0.12em;
+}
+.tag.live { color: var(--accent); }
+.tag.study, .tag.wip { color: var(--muted); }
+
+footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 1rem;
+  padding-top: 1.4rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+footer a { color: var(--muted); }
+</style>
+<div class="sheet">
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/" aria-current="page">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
+<p><span class="eyebrow">Case study · the method correcting itself</span></p>
+<h1>The rule broke, and the rule caught it</h1>
+<p class="lede">
+Every time development friction occurs — the AI hesitating, going the wrong way, or an
+instruction turning out to be ambiguous — it is supposed to be written down on the
+spot. The principle is right, and in practice the entries do not all get written. So
+the session logs get scanned for the moments worth reading, and the candidates come
+back for review. The first thing the loop surfaced was one of my own rules failing for
+the fourth time.
+</p>
+<p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/meta/loop">Source</a>
+· 64 friction entries across four ledgers · decisions recorded in ADR-0049 and ADR-0055</p>
+<hr>
+<h2>Why write it down at all</h2>
+<p>A friction entry is not a bug report. It records the moment something went wrong, the
+hypothesis for <em>why</em>, and — the part that makes it worth the trouble — where the fix
+was pushed down to. A recurring cause is treated as a structural defect in the rules,
+not as bad luck, and the fix is a rule change rather than a reminder to be careful.</p>
+<p>That only works if the entries exist. Writing them in the moment is correct, because
+reconstructing them later loses the detail. But "we did not write it down" was never
+meant to imply "it is gone forever", and the ledger had visible holes.</p>
+<h2>Three properties of the raw logs that make naive counting wrong</h2>
+<p>Before anything could be scanned, the logs had to be normalised, because measuring
+them directly produces confident nonsense. Three things were measured and folded:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Measured</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sessions fork and resume</td>
+<td>over a fifth of all records are duplicates</td>
+<td>a week with more branching gets a bigger denominator, inventing a trend</td>
+</tr>
+<tr>
+<td>Role agents write separate files</td>
+<td>108 runs, comparable in size to the main log</td>
+<td>the friction inside delegated work is invisible from the main transcript</td>
+</tr>
+<tr>
+<td><code>role: user</code> is not a person</td>
+<td>231 notifications against 522 actual human messages</td>
+<td>tool results counted as human speech</td>
+</tr>
+</tbody>
+</table>
+<p>The third one bites hardest. Inside a role agent's log, <code>role: user</code> is the
+orchestrator briefing it — so counting naively turns <em>my instruction to an agent</em> into
+<em>a human correction</em>, which is close to the opposite of what it means. That happened
+once before it was caught.</p>
+<p>Normalisation happens in exactly one place, and every tool above it reads that index
+rather than the raw files. Rebuilding it from scratch takes about two seconds, so it
+is rebuilt every run instead of being updated incrementally.</p>
+<h2>What the loop found that reading could not</h2>
+<p>Once the analysis ran over the normalised index rather than the main transcript, two
+things showed up that had never been visible:</p>
+<ul>
+<li><strong>An agent stuck on the same error 23 times in a row</strong> — the architect failing on a
+  wrong working directory, over and over, inside a delegated run nobody was watching.</li>
+<li><strong>A silent rework</strong>: the orchestrator telling a role agent <em>"my previous instruction
+  to you was wrong"</em> and restarting it. Real friction, never logged, because from the
+  outside the slice just took longer.</li>
+</ul>
+<p>And across sessions rather than within them:</p>
+<blockquote>
+<p><code>File does not exist … working directory</code> occurred <strong>124 times across 14 sessions</strong>,
+and appeared <strong>zero times</strong> in a ledger of 51 entries.</p>
+</blockquote>
+<p>Inside any single session that reads as "a few errors happened". Only the cross-session
+view makes it a defect.</p>
+<h2>The rule that broke</h2>
+<p>The entry the loop is named for. A person told me the architecture decision records
+had become hard to read — that you could not understand one on its own, and the prose
+had gone stiff.</p>
+<p>Rather than argue about taste, the 49 records in scope were measured:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ADR-0001 to 0021</th>
+<th>ADR-0022 to 0052</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bold text as a share of body</td>
+<td>6.3%</td>
+<td><strong>15.5%</strong></td>
+</tr>
+<tr>
+<td>Parenthetical asides per document</td>
+<td>0.7</td>
+<td><strong>4.8</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The cause was not carelessness. An earlier rule already said that anything a human
+approves must open with a summary for the approver — and when that rule was written, a
+table of exceptions judged ADRs to be <em>already compliant</em>, because their decision
+section was serving as the conclusion. That judgement quietly stopped being true.</p>
+<p>It was the fourth occurrence of the same cause key, and the first three were logged
+against a different project's ledger. The recurrence was only visible because the
+ledgers share cause keys across all four.</p>
+<p>The fix went into the rules: records must stand alone, and the three stylistic
+properties a machine can actually count — bold ratio, longest sentence, number of
+asides — are now reported by the linter.</p>
+<h2>When it runs, and why not at merge</h2>
+<p>The scan triggers just before a pull request is opened, not after it merges.</p>
+<p>Reflection belongs at the end of a piece of work, and opening the PR is the one moment
+in this workflow where a slice is deliberately closed and summarised. Merging is the
+wrong moment for a duller reason: once the PR is merged, recording the friction needs
+a <em>second</em> pull request — and "recording something requires another PR" is itself the
+most frequently recurring entry in the ledger. A harvesting mechanism that generates
+the friction it is trying to capture is not much of a mechanism.</p>
+<p>The measured trigger rates agreed: <code>gh pr create</code> fired 98 times in 30 days, while
+<code>gh pr merge</code> fired 12 times in one — merges mostly happen through the web interface,
+where no local hook can see them.</p>
+<h2>What it cannot do</h2>
+<p>The honest limit, and it does not go away with more effort.</p>
+<p>The obvious question is whether the loop makes things better, and the flow of work is
+too small to answer it. The correction rate — human messages that rewrite a previous
+instruction — currently sits around 3.8%, from roughly 75 prompts a week. Detecting a
+halving of that with any confidence needs about 1,200 prompts on each side of the
+comparison: <strong>something like seven and a half months of work before the question can be
+answered at all.</strong></p>
+<p>So the tooling does not claim improvement. It says <em>not yet decidable</em> and reports how
+many more observations it needs. What it can detect on this volume is a large
+regression — roughly a doubling, in about three months.</p>
+<p>Measuring a thing does not entitle you to a conclusion about it, and a dashboard that
+implies otherwise is worse than no dashboard. The output here is candidates for a
+person to read, not a verdict.</p>
+<footer>
+  <span>Operating data generated 2026-08-23 22:38.</span>
+  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
+  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+</footer>
+</div>

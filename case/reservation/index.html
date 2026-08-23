@@ -1,0 +1,286 @@
+<title>A design procedure in Java</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
+<style>
+:root {
+  --paper:  #F2F3F0;
+  --raised: #FBFBF9;
+  --ink:    #1B2320;
+  --muted:  #6B7570;
+  --rule:   #D7DAD6;
+  --accent: #2F6F5E;
+  --alarm:  #9A3B2E;
+  --tape:   #E1E4E0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:  #141816;
+    --raised: #1B211E;
+    --ink:    #E4E8E3;
+    --muted:  #8A948E;
+    --rule:   #272E2A;
+    --accent: #5FAE96;
+    --alarm:  #CE7360;
+    --tape:   #262D29;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:  #141816;
+  --raised: #1B211E;
+  --ink:    #E4E8E3;
+  --muted:  #8A948E;
+  --rule:   #272E2A;
+  --accent: #5FAE96;
+  --alarm:  #CE7360;
+  --tape:   #262D29;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:focus-visible, .nav a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.sheet {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3.5rem) 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* 上部の帯。現在地を実線で示す */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  align-items: baseline;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.9rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+}
+.nav a { color: var(--muted); text-decoration: none; }
+.nav a:hover { color: var(--ink); }
+.nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.2rem;
+}
+.nav .home { color: var(--ink); font-weight: 500; margin-right: auto; }
+
+.eyebrow {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+h1 {
+  font-family: Fraunces, Georgia, serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0.4rem 0 0;
+}
+h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 600;
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin: 2.4rem 0 0;
+}
+h3 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 1.8rem 0 0;
+}
+
+p, ul, ol { margin: 0.9rem 0 0; max-width: 64ch; }
+li { margin-top: 0.3rem; }
+.lede { font-size: 1.08rem; }
+.note { color: var(--muted); font-size: 0.92rem; }
+
+blockquote {
+  margin: 1.4rem 0 0;
+  padding: 0.9rem 1.3rem;
+  background: var(--raised);
+  border-left: 2px solid var(--accent);
+  max-width: 64ch;
+}
+blockquote p { margin-top: 0; }
+blockquote p + p { margin-top: 0.7rem; }
+
+code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.86em;
+}
+pre {
+  background: var(--raised);
+  border: 1px solid var(--rule);
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin: 1.4rem 0 0;
+}
+pre code { font-size: inherit; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; margin: 1.4rem 0 0; }
+th, td {
+  text-align: left;
+  padding: 0.55rem 1rem 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+th {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+}
+.scroll { overflow-x: auto; }
+
+/* 状態のラベル。稼働中と学習用を取り違えさせない */
+.tag {
+  display: inline-block;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 0.1rem 0.45rem;
+  vertical-align: 0.12em;
+}
+.tag.live { color: var(--accent); }
+.tag.study, .tag.wip { color: var(--muted); }
+
+footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 1rem;
+  padding-top: 1.4rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+footer a { color: var(--muted); }
+</style>
+<div class="sheet">
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/" aria-current="page">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
+<p><span class="eyebrow">Case study · Java 21 · Spring Boot</span></p>
+<h1>Boundaries a test can enforce</h1>
+<p class="lede">
+A meeting-room booking system, worked from EventStorming through aggregate boundaries
+and concurrency control into a running Java service. It was built to practise the
+procedure, and it is <strong>not built out and not operated</strong>. What it
+demonstrates is engineering practice, and those claims do not need a product behind
+them — they need tests, which is the point of the whole thing.
+</p>
+<p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/projects/reservation-system">Source</a>
+· 89 Java files · 8 ADRs · Gherkin acceptance scenarios</p>
+<hr>
+<h2>Cancellation is a fact, not a status</h2>
+<p>The first real modelling decision. A reservation that has been cancelled is not in a
+"cancelled state" that someone set — something happened at a point in time, and the
+state is what you conclude from it.</p>
+<p>So the only thing stored is <code>cancelledAt</code>. The status is derived, and the derivation
+lives in exactly one place:</p>
+<p><code>java
+/** cancelledAt の有無から状態を導出する唯一の場所。 */
+public static ReservationStatus of(LocalDateTime cancelledAt) {
+    return cancelledAt == null ? CONFIRMED : CANCELLED;
+}</code></p>
+<p>The class documentation carries the rule that matters more than the code:
+no other class may decide "is this cancelled" by looking at <code>cancelledAt</code> itself.
+Two sources of truth for the same question is how state models rot — one caller
+checks the timestamp, another checks the enum, and eventually they disagree.</p>
+<h2>The layer boundary is enforced, not agreed</h2>
+<p>Hexagonal layering is easy to draw and easy to violate. Someone needs a repository
+inside a domain object, adds one import, and the diagram quietly stops being true.</p>
+<p>So the direction is a test. <code>ArchitectureTest</code> fails the build if the domain learns
+about the framework:</p>
+<p><code>java
+noClasses().that().resideInAPackage("reservation.domain..")
+        .should().dependOnClassesThat().resideInAnyPackage(
+                "reservation.application..", "reservation.adapter..",
+                "org.springframework..", "jakarta..", "javax..");</code></p>
+<p>The domain package currently holds zero Spring or JPA imports, and it stays that way
+because breaking it turns the build red rather than requiring someone to notice it in
+review. Two further rules pin <code>application</code> away from <code>adapter</code> and assert the layer
+order in one direction only.</p>
+<h3>The rule I am most glad I wrote</h3>
+<p>Acceptance tests need a seam into the running system — something to set the clock, or
+plant fixtures. That seam is a back door, and back doors ship.</p>
+<p><code>java
+classes().that().haveSimpleNameStartingWith("TestSupport")
+        .should().beAnnotatedWith(Profile.class)</code></p>
+<p>Any test-support class must be gated behind a Spring profile. It is three lines, and
+it removes an entire category of "how did that endpoint get into production".</p>
+<h2>The last line of defence is the database</h2>
+<p>Double booking is a concurrency problem, and an application-layer check does not solve
+it — two requests can both pass the check before either writes. The real guarantee is
+a PostgreSQL <code>EXCLUDE</code> constraint on the room and time range.</p>
+<p>The interesting part is how it is verified. The test <strong>deliberately bypasses the
+application check</strong> and writes straight through the repository port, so that what is
+being proven is the constraint on its own:</p>
+<blockquote>
+<p>L3 (DB boundary): the final defence against double booking — verifying the
+PostgreSQL EXCLUDE constraint. Saves directly to the port without passing the
+application-layer pre-check, and confirms the database alone rejects it.</p>
+</blockquote>
+<p>It runs against a real PostgreSQL in Testcontainers, not an in-memory substitute. An
+H2 stand-in would have happily accepted the overlap and the test would have passed
+while the guarantee did not exist. Adjacent bookings that merely touch at the boundary
+are asserted to be allowed, which is where off-by-one errors in time ranges live.</p>
+<h2>Contracts before implementation</h2>
+<p>The OpenAPI document is the source of truth, not a description written afterwards. On
+the frontend side the API types are generated from it, so the client cannot drift from
+the contract without the build noticing.</p>
+<p>Acceptance scenarios can also land on the main branch <em>before</em> the code that satisfies
+them, tagged <code>@pending-implementation</code> and excluded from the default run. That sounds
+minor and is not: it means "what correct means" can be agreed and merged as its own
+reviewable change, instead of arriving fused to an implementation that already assumes
+the answer.</p>
+<p>The acceptance suite lives in its own Gradle source set with a DSL layer between the
+step definitions and the assertions, so the scenarios read as domain language rather
+than as HTTP calls.</p>
+<h2>What this does not show</h2>
+<p>It is a study exercise, so the honest limits are worth stating.</p>
+<p>There is no deployment, no authentication, no load beyond what the tests generate, and
+no operational history — nothing here has been maintained under real usage or changed
+under pressure from real users. The concurrency guarantee is proven at the database
+level but has never met genuine contention.</p>
+<p>What I take from it is narrower than "I can build a booking system", and more useful:
+a boundary that a test enforces stays true, and a boundary that only a diagram
+describes does not.</p>
+<footer>
+  <span>Operating data generated 2026-08-23 22:38.</span>
+  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
+  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+</footer>
+</div>
