@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Scanning session logs for development friction, and what it caught first: one of my own rules breaking.">
-<title>A loop that catches my own drift</title>
+<meta name="description" content="セッションログから開発中の摩擦を拾い直す仕組みと、それが最初に捕まえたもの——自分の規程が破れていたこと。">
+<title>自分のずれを捕まえるループ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -48,7 +48,8 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
   font-size: 16px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
@@ -98,7 +99,7 @@ a:focus-visible, .nav a:focus-visible {
 }
 
 h1 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-optical-sizing: auto;
   font-weight: 600;
   font-size: clamp(2rem, 5vw, 2.9rem);
@@ -108,7 +109,7 @@ h1 {
   margin: 0.4rem 0 0;
 }
 h2 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-weight: 600;
   font-size: 1.45rem;
   letter-spacing: -0.01em;
@@ -198,147 +199,132 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="sheet">
-<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/" aria-current="page">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
-<p><span class="eyebrow">Case study · the method correcting itself</span></p>
-<h1>The rule broke, and the rule caught it</h1>
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">仕事</a><a href="/case/reservation/">ケース: 設計手順</a><a href="/case/harvest/" aria-current="page">ケース: 収穫ループ</a><a href="/data/">運用データ</a></nav>
+<p><span class="eyebrow">ケーススタディ · 方法論の自己修正</span></p>
+<h1>規程が破れ、その規程が破れを捕まえた</h1>
 <p class="lede">
-Every time development friction occurs — the AI hesitating, going the wrong way, or an
-instruction turning out to be ambiguous — it is supposed to be written down on the
-spot. The principle is right, and in practice the entries do not all get written. So
-the session logs get scanned for the moments worth reading, and the candidates come
-back for review. The first thing the loop surfaced was one of my own rules failing for
-the fourth time.
+開発中の摩擦——AIが迷った、間違った方向へ行った、指示が曖昧で事故った——は、
+その場で書き留める規程になっています。原則としては正しく、そして実際には全部は書かれません。
+だからセッションログを走査して読む価値のある瞬間を拾い、候補として戻します。
+このループが最初に浮かび上がらせたのは、<strong>自分が作った規程が4回目に破れていたこと</strong>でした。
 </p>
-<p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/meta/loop">Source</a>
-· 64 friction entries across four ledgers · decisions recorded in ADR-0049 and ADR-0055</p>
+<p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/meta/loop">ソース</a>
+· 4つの台帳に friction 64件 · 決定は ADR-0049 と ADR-0055</p>
 <hr>
-<h2>Why write it down at all</h2>
-<p>A friction entry is not a bug report. It records the moment something went wrong, the
-hypothesis for <em>why</em>, and — the part that makes it worth the trouble — where the fix
-was pushed down to. A recurring cause is treated as a structural defect in the rules,
-not as bad luck, and the fix is a rule change rather than a reminder to be careful.</p>
-<p>That only works if the entries exist. Writing them in the moment is correct, because
-reconstructing them later loses the detail. But "we did not write it down" was never
-meant to imply "it is gone forever", and the ledger had visible holes.</p>
-<h2>Three properties of the raw logs that make naive counting wrong</h2>
-<p>Before anything could be scanned, the logs had to be normalised, because measuring
-them directly produces confident nonsense. Three things were measured and folded:</p>
+<h2>なぜ書き留めるのか</h2>
+<p>friction の1件はバグ報告ではありません。<strong>何が起きたか</strong>、<strong>なぜかの仮説</strong>、そして
+手間に見合う理由になる部分——<strong>修正をどの段へ押し込んだか</strong>を記録します。</p>
+<p>同じ原因が繰り返したら、それは運が悪いのではなく<strong>規程の構造的欠陥</strong>として扱い、
+修正は「次から気をつける」ではなく規程そのものの変更になります。</p>
+<p>これは記録が存在して初めて機能します。その場で書くのは正しい——後からの再構成は細部を失うので。
+ただし「書かなかった分は永久に失われてよい」までは意図していませんでした。
+そして台帳には目に見える穴がありました。</p>
+<h2>素朴に数えると必ず間違える3つの癖</h2>
+<p>走査の前に、ログを正規化する必要がありました。<strong>そのまま測ると、自信に満ちた出鱈目が出る</strong>からです。
+実測して畳んだのは3つです。</p>
 <div class="scroll"><table>
 <thead>
 <tr>
-<th>Property</th>
-<th>Measured</th>
-<th>Why it matters</th>
+<th>癖</th>
+<th>実測</th>
+<th>なぜ効くか</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Sessions fork and resume</td>
-<td>over a fifth of all records are duplicates</td>
-<td>a week with more branching gets a bigger denominator, inventing a trend</td>
+<td>セッションがフォーク・再開する</td>
+<td>全レコードの2割超が重複</td>
+<td>分岐の多い週だけ分母が膨らみ、偽のトレンドが出る</td>
 </tr>
 <tr>
-<td>Role agents write separate files</td>
-<td>108 runs, comparable in size to the main log</td>
-<td>the friction inside delegated work is invisible from the main transcript</td>
+<td>役割agentは別ファイルに書く</td>
+<td>108実行・メインとほぼ同量</td>
+<td><strong>委譲した先で起きた摩擦がメインの記録から見えない</strong></td>
 </tr>
 <tr>
-<td><code>role: user</code> is not a person</td>
-<td>231 notifications against 522 actual human messages</td>
-<td>tool results counted as human speech</td>
+<td><code>role: user</code> は人間とは限らない</td>
+<td>通知231件 対 人間の発話522件</td>
+<td>ツールの実行結果を人間の発話として数える</td>
 </tr>
 </tbody>
 </table></div>
-<p>The third one bites hardest. Inside a role agent's log, <code>role: user</code> is the
-orchestrator briefing it — so counting naively turns <em>my instruction to an agent</em> into
-<em>a human correction</em>, which is close to the opposite of what it means. That happened
-once before it was caught.</p>
-<p>Normalisation happens in exactly one place, and every tool above it reads that index
-rather than the raw files. Rebuilding it from scratch takes about two seconds, so it
-is rebuilt every run instead of being updated incrementally.</p>
-<h2>What the loop found that reading could not</h2>
-<p>Once the analysis ran over the normalised index rather than the main transcript, two
-things showed up that had never been visible:</p>
+<p>3つ目が一番効きます。役割agentのログでの <code>role: user</code> は<strong>orchestratorがそのagentへ渡した
+ブリーフ</strong>です。素朴に数えると <em>私がagentへ出した指示</em> が <em>人間による訂正</em> に化ける——
+意味がほぼ反転します。捕まえる前に一度これが起きました。</p>
+<p>正規化は1箇所だけで行い、その上の道具はすべて生ログではなくこの索引を読みます。
+全再構築が約2秒なので、差分更新せずに毎回作り直しています。</p>
+<h2>読んでいるだけでは見えなかったもの</h2>
+<p>メインのトランスクリプトではなく正規化済みの索引の上で走らせた途端、
+それまで一度も見えていなかったものが2つ出ました。</p>
 <ul>
-<li><strong>An agent stuck on the same error 23 times in a row</strong> — the architect failing on a
-  wrong working directory, over and over, inside a delegated run nobody was watching.</li>
-<li><strong>A silent rework</strong>: the orchestrator telling a role agent <em>"my previous instruction
-  to you was wrong"</em> and restarting it. Real friction, never logged, because from the
-  outside the slice just took longer.</li>
+<li><strong>同じエラーで23回連続して詰まっていたagent</strong> — architect が作業ディレクトリの誤りで、
+  誰も見ていない委譲実行の中で何度も何度も。</li>
+<li><strong>無言の手戻り</strong> — orchestrator が役割agentに <em>「前回の私の指示が間違っていました」</em> と伝えて
+  やり直させていた。本物の摩擦なのに未記録。外から見るとスライスが少し長引いただけだからです。</li>
 </ul>
-<p>And across sessions rather than within them:</p>
+<p>そしてセッションの中ではなく、跨いで見ると:</p>
 <blockquote>
-<p><code>File does not exist … working directory</code> occurred <strong>124 times across 14 sessions</strong>,
-and appeared <strong>zero times</strong> in a ledger of 51 entries.</p>
+<p><code>File does not exist … working directory</code> が <strong>14セッション・124回</strong>発生していて、
+51件の台帳に<strong>1件も記録されていなかった</strong>。</p>
 </blockquote>
-<p>Inside any single session that reads as "a few errors happened". Only the cross-session
-view makes it a defect.</p>
-<h2>The rule that broke</h2>
-<p>The entry the loop is named for. A person told me the architecture decision records
-had become hard to read — that you could not understand one on its own, and the prose
-had gone stiff.</p>
-<p>Rather than argue about taste, the 49 records in scope were measured:</p>
+<p>1セッションの中では「エラーが何回か出た」にしか見えません。<strong>横断で見て初めて欠陥になります。</strong></p>
+<h2>破れた規程</h2>
+<p>このループの名前の由来になった1件です。人間から、ADRが読みにくいと指摘されました——
+1枚だけ読んでも何のことか分からない、文章が硬い、と。</p>
+<p>好みの議論をする代わりに、対象の49本を測りました。</p>
 <div class="scroll"><table>
 <thead>
 <tr>
 <th></th>
-<th>ADR-0001 to 0021</th>
-<th>ADR-0022 to 0052</th>
+<th>ADR-0001〜0021</th>
+<th>ADR-0022〜0052</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Bold text as a share of body</td>
+<td>本文に占める太字の割合</td>
 <td>6.3%</td>
 <td><strong>15.5%</strong></td>
 </tr>
 <tr>
-<td>Parenthetical asides per document</td>
-<td>0.7</td>
-<td><strong>4.8</strong></td>
+<td>1本あたりの挿入節</td>
+<td>0.7回</td>
+<td><strong>4.8回</strong></td>
 </tr>
 </tbody>
 </table></div>
-<p>The cause was not carelessness. An earlier rule already said that anything a human
-approves must open with a summary for the approver — and when that rule was written, a
-table of exceptions judged ADRs to be <em>already compliant</em>, because their decision
-section was serving as the conclusion. That judgement quietly stopped being true.</p>
-<p>It was the fourth occurrence of the same cause key, and the first three were logged
-against a different project's ledger. The recurrence was only visible because the
-ledgers share cause keys across all four.</p>
-<p>The fix went into the rules: records must stand alone, and the three stylistic
-properties a machine can actually count — bold ratio, longest sentence, number of
-asides — are now reported by the linter.</p>
-<h2>When it runs, and why not at merge</h2>
-<p>The scan triggers just before a pull request is opened, not after it merges.</p>
-<p>Reflection belongs at the end of a piece of work, and opening the PR is the one moment
-in this workflow where a slice is deliberately closed and summarised. Merging is the
-wrong moment for a duller reason: once the PR is merged, recording the friction needs
-a <em>second</em> pull request — and "recording something requires another PR" is itself the
-most frequently recurring entry in the ledger. A harvesting mechanism that generates
-the friction it is trying to capture is not much of a mechanism.</p>
-<p>The measured trigger rates agreed: <code>gh pr create</code> fired 98 times in 30 days, while
-<code>gh pr merge</code> fired 12 times in one — merges mostly happen through the web interface,
-where no local hook can see them.</p>
-<h2>What it cannot do</h2>
-<p>The honest limit, and it does not go away with more effort.</p>
-<p>The obvious question is whether the loop makes things better, and the flow of work is
-too small to answer it. The correction rate — human messages that rewrite a previous
-instruction — currently sits around 3.8%, from roughly 75 prompts a week. Detecting a
-halving of that with any confidence needs about 1,200 prompts on each side of the
-comparison: <strong>something like seven and a half months of work before the question can be
-answered at all.</strong></p>
-<p>So the tooling does not claim improvement. It says <em>not yet decidable</em> and reports how
-many more observations it needs. What it can detect on this volume is a large
-regression — roughly a doubling, in about three months.</p>
-<p>Measuring a thing does not entitle you to a conclusion about it, and a dashboard that
-implies otherwise is worse than no dashboard. The output here is candidates for a
-person to read, not a verdict.</p>
+<p>原因は不注意ではありませんでした。<strong>人間が承認する成果物は冒頭に承認者向けサマリを持つ</strong>、
+という規程は既にありました。ただしそれを作ったとき、例外の表がADRを <em>充足済み</em> と判定していた——
+決定節が結論として機能しているから、という理由で。<strong>その判定が静かに真でなくなっていた</strong>のです。</p>
+<p>これは同じ原因キーの4回目で、先行する3回は別プロジェクトの台帳に載っていました。
+<strong>再発が見えたのは、4つの台帳が原因キーを共有しているから</strong>です。</p>
+<p>修正は規程に入りました。ADRは自己完結で書く。そして機械が数えられる3項目——
+太字率・最長文長・挿入節の数——はlinterが報告します。</p>
+<h2>いつ走るか、なぜマージ時ではないか</h2>
+<p>走査はプルリクエストを<strong>作成する直前</strong>で、マージ後ではありません。</p>
+<p>振り返りは仕事の終わりにやるものであり、PRの作成はこのワークフローでスライスを意図的に閉じて
+まとめる唯一の儀式だからです。</p>
+<p>マージが不適な理由はもっと即物的です。<strong>マージ後に摩擦を記録するには2本目のPRが要る</strong>——
+そして「記録するのに2本目のPRが要る」は、台帳で最も多く再発している項目そのものです。
+<strong>収穫の仕組みが、自ら捕まえようとしている摩擦を生んでしまう。</strong></p>
+<p>実測もそう言っていました。<code>gh pr create</code> は30日で98回、<code>gh pr merge</code> は1日で12回。
+マージは主にWeb画面で行われ、ローカルのhookからは見えません。</p>
+<h2>できないこと</h2>
+<p>正直な限界で、努力では消えません。</p>
+<p>当然の問いは「このループで良くなったのか」ですが、<strong>仕事の流量が小さすぎて答えられません</strong>。
+訂正率——前の指示を打ち直した人間の発話の割合——は現状およそ3.8%、週あたり約75プロンプトです。
+これが半減したことを確信をもって検出するには、比較の片側に約1,200プロンプト必要で、
+<strong>問いに答えられるようになるまで7か月半ほどかかります</strong>。</p>
+<p>だから道具は改善を主張しません。<strong>「まだ判定できない」と言い、あと何件必要かを示します。</strong>
+この流量で検出できるのは大きな悪化——およそ倍化なら約3か月——だけです。</p>
+<p>測ったからといって、それについて結論を出す資格が生まれるわけではありません。
+<strong>そうであるかのように見せるダッシュボードは、ダッシュボードが無いより悪い。</strong>
+ここでの出力は人間が読むための候補であって、判定ではありません。</p>
 <footer>
-  <span>Operating data generated 2026-08-23 22:45.</span>
-  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  <span>運用データ生成 2026-08-23 23:06</span>
+  <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
-  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+  <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
 </footer>
 </div>
 </body>

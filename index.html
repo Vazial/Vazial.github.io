@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Backend engineer building a template for AI-driven development, and measuring whether the method is followed.">
-<title>Vazial — AI-driven development</title>
+<meta name="description" content="AI駆動開発のテンプレートを設計し、その方法論が実際に守られているかを運用ログで測っている。">
+<title>Vazial — AI駆動開発</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -48,7 +48,8 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
   font-size: 16px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
@@ -98,7 +99,7 @@ a:focus-visible, .nav a:focus-visible {
 }
 
 h1 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-optical-sizing: auto;
   font-weight: 600;
   font-size: clamp(2rem, 5vw, 2.9rem);
@@ -108,7 +109,7 @@ h1 {
   margin: 0.4rem 0 0;
 }
 h2 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-weight: 600;
   font-size: 1.45rem;
   letter-spacing: -0.01em;
@@ -198,63 +199,89 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="sheet">
-<nav class="nav"><a href="/" aria-current="page" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
-<p><span class="eyebrow">Backend engineer · Japan</span></p>
-<h1>I build the method, then measure whether I follow it</h1>
+<nav class="nav"><a href="/" aria-current="page" class="home">Vazial</a><a href="/work/">仕事</a><a href="/case/reservation/">ケース: 設計手順</a><a href="/case/harvest/">ケース: 収穫ループ</a><a href="/data/">運用データ</a></nav>
+<p><span class="eyebrow">バックエンドエンジニア</span></p>
+<h1>方法論を作り、守れているかを測る</h1>
 <p class="lede">
-When implementation is delegated to AI agents, reading the output to check it stops
-working the moment there is any volume. So I put the guarantee of correctness in
-mechanised verification instead, narrowed human involvement to four approval points,
-and then — because a method nobody checks is just an opinion — wired the operating
-logs back in to measure whether the method is actually being followed.
+実装をAIエージェントに任せる開発では、出力を人間が読んで確かめる運用は量が増えた瞬間に破綻します。
+だから正しさの保証を機械化された検証に移し、人間の関与を4つの承認点に絞りました。
+そのうえで——誰も点検しない方法論はただの意見なので——運用ログを引き戻して、
+<strong>その方法論が実際に守られているか</strong>を測っています。
 </p>
-<p>The template is the work. The projects below exist to put it under load.</p>
-<h2>The bet</h2>
-<p>Reviewing AI output by hand does not scale, and it fails quietly: the reviewer gets
-tired before the code gets correct. The alternative is to decide what "correct" means
-up front, encode it as executable contracts, and let CI be the thing that says no.</p>
-<p>A person still approves four things, because these cannot be delegated to a machine:
-the <strong>contract</strong> (what correct means), the <strong>design skeleton</strong> (expensive to reverse),
-the <strong>step definitions</strong> (the mapping between prose scenarios and code), and
-<strong>changes to the rules themselves</strong> (a rule change cannot be self-certified).</p>
-<p>Everything else moves into five verification levels, from unit tests up to experience
-quality, with failures caught at the level closest to the machine.</p>
-<p>The rules live in the repository rather than here, because a portfolio page that
-restates them would drift away from them:
-<a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>.</p>
-<h2>What that produced</h2>
-<p>Over 2026-05-30 to 2026-08-23, across 5 projects:
-401 commits, 196 pull requests, and
-839 prompts actually typed by a person.
-Machine verification passed 98.0% of
-493 runs — and, more usefully, failed the rest.</p>
-<p>The numbers are regenerated daily from session logs, git history, and GitHub Actions.
-I did not type any of them. <a href="/data/">See the full set →</a></p>
-<h2>Where to look</h2>
-<p><strong><a href="/work/">Work →</a></strong>
-Four projects, each labelled with what it actually is — one running service, one
-heavily iterated build, and two study exercises. The labels matter more than the
-count.</p>
-<p><strong><a href="/case/reservation/">Case: a design procedure in Java →</a></strong>
-A meeting-room booking domain worked through EventStorming, aggregate boundaries and
-concurrency, then carried into Java 21 and Spring Boot with the layer boundaries
-enforced by tests rather than by convention. Built to practise the procedure, not to
-operate.</p>
-<p><strong><a href="/case/harvest/">Case: a loop that catches my own drift →</a></strong>
-Development friction is supposed to be logged as it happens. It isn't, reliably. So
-the session logs get scanned for the moments where things went wrong, and the results
-are handed back for review. The first thing it caught was a rule of mine breaking for
-the fourth time.</p>
-<h2>About me</h2>
-<p>Backend developer working in C#/.NET and Java, with a background in electronic
-circuits, embedded systems and VHDL. Currently moving from implementation toward
-design and architecture, which is what this whole body of work is for.</p>
-<p>Full background, skills and contact: <a href="https://github.com/Vazial">github.com/Vazial</a>.</p>
+<p>テンプレートが本体です。以下のプロジェクトは、それに負荷をかけるために存在します。</p>
+<h2>何に賭けているか</h2>
+<p>AIの出力を人間がレビューして確かめる運用は、規模に対して伸びません。しかも壊れ方が静かです——
+コードが正しくなる前に、読む側が先に疲れます。</p>
+<p>だから「何が正しいか」を先に決め、実行可能な契約として書き、<strong>否と言う役目をCIに持たせます</strong>。</p>
+<p>人間が承認するのは4点だけです。機械に委ねられないものだからです。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>承認するもの</th>
+<th>なぜ人間か</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>契約（受け入れシナリオ・API仕様・ADR）</td>
+<td>「何が正しいか」は機械に決められない</td>
+</tr>
+<tr>
+<td>設計骨格</td>
+<td>後から覆すコストが高い</td>
+</tr>
+<tr>
+<td>step実装</td>
+<td>散文のシナリオとコードの対応は機械検証できない</td>
+</tr>
+<tr>
+<td>規程変更</td>
+<td>ルール自体の変更は自己申告にできない</td>
+</tr>
+</tbody>
+</table></div>
+<p>残りは5段の検証（単体テストから体験の質まで）に移し、<strong>失敗はできるだけ機械に近い段で捕まえます</strong>。</p>
+<p>規程そのものはリポジトリにあります。ここで書き直すと必ず食い違うので、書き直しません:
+<a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>。</p>
+<h2>それが生んだもの</h2>
+<p>2026-05-30 から 2026-08-23 まで、5個のプロジェクトで、
+コミット 404件、プルリクエスト 198本、
+人間が実際にタイプした指示 843件。
+機械検証は 496 回のうち 98.0% が通り——
+そしてより有用なことに、残りは落ちました。</p>
+<p>数値はセッションログ・git履歴・GitHub Actions から日次で再生成しています。手で書いた数字はありません。
+<a href="/data/">全体を見る →</a></p>
+<h2>どこを見るか</h2>
+<p><strong><a href="/work/">仕事 →</a></strong>
+4つのプロジェクトを、それぞれが<strong>実際に何であるか</strong>のラベル付きで。稼働中のサービスが1つ、
+作り込み中が1つ、学習用が2つ。数より、このラベルのほうが重要です。</p>
+<p><strong><a href="/case/reservation/">ケース: Javaでの設計手順 →</a></strong>
+会議室予約のドメインを EventStorming・集約境界・並行制御から Java 21 と Spring Boot へ。
+層の境界は規約ではなく<strong>テストが強制</strong>しています。手順を練習するために作ったもので、運用はしません。</p>
+<p><strong><a href="/case/harvest/">ケース: 自分のずれを捕まえるループ →</a></strong>
+開発中の摩擦はその場で記録する規程ですが、実際には書き落とします。だからセッションログを走査して
+候補を拾い直します。最初に捕まえたのは、<strong>自分が作った規程が4回目に破れていたこと</strong>でした。</p>
+<h2>私について</h2>
+<p>C#/.NET と Java でバックエンド開発をしています。大学では電子回路・組込み・VHDL をやりました。
+いま実装から設計・アーキテクチャへ軸足を移そうとしていて、この一連の仕事はそのためのものです。</p>
+<p>経歴・スキル・連絡先: <a href="https://github.com/Vazial">github.com/Vazial</a></p>
+<hr>
+
+<p class="note">
+<strong>In English</strong> — I build backend systems in C#/.NET and Java. This site documents a
+language-agnostic template for AI-driven development: it puts the guarantee of
+correctness in mechanised verification rather than human review, narrows human
+involvement to four approval points, and measures — from the operating logs — whether
+the method is actually being followed. The pages here are written in Japanese, as are
+the primary records they link to (106 architecture decision records and 64 friction-log
+entries). The <a href="/data/">operating data</a> is largely readable without Japanese, and my
+<a href="https://github.com/Vazial">GitHub profile</a> is in English.
+</p>
 <footer>
-  <span>Operating data generated 2026-08-23 22:45.</span>
-  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  <span>運用データ生成 2026-08-23 23:06</span>
+  <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
-  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+  <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
 </footer>
 </div>
 </body>

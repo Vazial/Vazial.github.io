@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A meeting-room booking domain in Java 21 and Spring Boot, with layer boundaries enforced by tests.">
-<title>A design procedure in Java</title>
+<meta name="description" content="会議室予約のドメインをJava 21とSpring Bootへ。層の境界を規約ではなくテストで強制する。">
+<title>Javaでの設計手順</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -48,7 +48,8 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
   font-size: 16px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
@@ -98,7 +99,7 @@ a:focus-visible, .nav a:focus-visible {
 }
 
 h1 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-optical-sizing: auto;
   font-weight: 600;
   font-size: clamp(2rem, 5vw, 2.9rem);
@@ -108,7 +109,7 @@ h1 {
   margin: 0.4rem 0 0;
 }
 h2 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-weight: 600;
   font-size: 1.45rem;
   letter-spacing: -0.01em;
@@ -198,98 +199,86 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="sheet">
-<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/" aria-current="page">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
-<p><span class="eyebrow">Case study · Java 21 · Spring Boot</span></p>
-<h1>Boundaries a test can enforce</h1>
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">仕事</a><a href="/case/reservation/" aria-current="page">ケース: 設計手順</a><a href="/case/harvest/">ケース: 収穫ループ</a><a href="/data/">運用データ</a></nav>
+<p><span class="eyebrow">ケーススタディ · Java 21 · Spring Boot</span></p>
+<h1>テストが守れる境界</h1>
 <p class="lede">
-A meeting-room booking system, worked from EventStorming through aggregate boundaries
-and concurrency control into a running Java service. It was built to practise the
-procedure, and it is <strong>not built out and not operated</strong>. What it
-demonstrates is engineering practice, and those claims do not need a product behind
-them — they need tests, which is the point of the whole thing.
+会議室予約システムを、EventStorming から集約境界・並行制御を経て動くJavaのサービスまで通しました。
+<strong>手順を練習するために作ったもので、作り込んでおらず運用もしていません。</strong>
+ここで示せるのは技術実践であり、その主張に製品は要りません——要るのはテストで、
+それがこの話の全部です。
 </p>
-<p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/projects/reservation-system">Source</a>
-· 89 Java files · 8 ADRs · Gherkin acceptance scenarios</p>
+<p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/projects/reservation-system">ソース</a>
+· Javaファイル89本 · ADR 8本 · Gherkinの受け入れシナリオ</p>
 <hr>
-<h2>Cancellation is a fact, not a status</h2>
-<p>The first real modelling decision. A reservation that has been cancelled is not in a
-"cancelled state" that someone set — something happened at a point in time, and the
-state is what you conclude from it.</p>
-<p>So the only thing stored is <code>cancelledAt</code>. The status is derived, and the derivation
-lives in exactly one place:</p>
+<h2>キャンセルは状態ではなく事実</h2>
+<p>最初の本格的なモデリング判断です。キャンセルされた予約は、誰かがセットした「キャンセル状態」に
+あるのではありません。<strong>ある時点で何かが起きた</strong>のであって、状態はそこから導く結論です。</p>
+<p>だから保存するのは <code>cancelledAt</code> だけ。状態は導出し、導出は1箇所にしか置きません。</p>
 <p><code>java
 /** cancelledAt の有無から状態を導出する唯一の場所。 */
 public static ReservationStatus of(LocalDateTime cancelledAt) {
     return cancelledAt == null ? CONFIRMED : CANCELLED;
 }</code></p>
-<p>The class documentation carries the rule that matters more than the code:
-no other class may decide "is this cancelled" by looking at <code>cancelledAt</code> itself.
-Two sources of truth for the same question is how state models rot — one caller
-checks the timestamp, another checks the enum, and eventually they disagree.</p>
-<h2>The layer boundary is enforced, not agreed</h2>
-<p>Hexagonal layering is easy to draw and easy to violate. Someone needs a repository
-inside a domain object, adds one import, and the diagram quietly stops being true.</p>
-<p>So the direction is a test. <code>ArchitectureTest</code> fails the build if the domain learns
-about the framework:</p>
+<p>コードより重要なのはクラスのドキュメントに書いた規則です——
+<strong>他のどのクラスも <code>cancelledAt</code> を直接見て「キャンセル済みか」を判定してはならない</strong>。</p>
+<p>同じ問いに真実の源が2つあると、状態モデルはそこから腐ります。ある呼び出し側はタイムスタンプを見て、
+別の側は列挙を見て、いずれ食い違う。</p>
+<h2>層の境界は「合意」ではなく「強制」する</h2>
+<p>ヘキサゴナルの層は、描くのは簡単で破るのも簡単です。誰かがドメインオブジェクトの中に
+リポジトリを必要として、importを1行足す。それで図は静かに真実でなくなります。</p>
+<p>だから方向を<strong>テスト</strong>にしました。<code>ArchitectureTest</code> は、ドメインがフレームワークを
+知った時点でビルドを落とします。</p>
 <p><code>java
 noClasses().that().resideInAPackage("reservation.domain..")
         .should().dependOnClassesThat().resideInAnyPackage(
                 "reservation.application..", "reservation.adapter..",
                 "org.springframework..", "jakarta..", "javax..");</code></p>
-<p>The domain package currently holds zero Spring or JPA imports, and it stays that way
-because breaking it turns the build red rather than requiring someone to notice it in
-review. Two further rules pin <code>application</code> away from <code>adapter</code> and assert the layer
-order in one direction only.</p>
-<h3>The rule I am most glad I wrote</h3>
-<p>Acceptance tests need a seam into the running system — something to set the clock, or
-plant fixtures. That seam is a back door, and back doors ship.</p>
+<p>ドメインパッケージは現在 Spring も JPA も1つもimportしていません。そしてその状態が保たれるのは、
+破ると<strong>レビューで誰かが気づく必要ではなく、ビルドが赤くなる</strong>からです。
+さらに2本の規則で <code>application</code> を <code>adapter</code> から引き離し、層の順序を一方向に固定しています。</p>
+<h3>書いておいて一番よかった規則</h3>
+<p>受け入れテストには、動いているシステムへの継ぎ目が要ります。時計を進めるとか、データを仕込むとか。
+<strong>その継ぎ目は裏口で、裏口は出荷されます。</strong></p>
 <p><code>java
 classes().that().haveSimpleNameStartingWith("TestSupport")
         .should().beAnnotatedWith(Profile.class)</code></p>
-<p>Any test-support class must be gated behind a Spring profile. It is three lines, and
-it removes an entire category of "how did that endpoint get into production".</p>
-<h2>The last line of defence is the database</h2>
-<p>Double booking is a concurrency problem, and an application-layer check does not solve
-it — two requests can both pass the check before either writes. The real guarantee is
-a PostgreSQL <code>EXCLUDE</code> constraint on the room and time range.</p>
-<p>The interesting part is how it is verified. The test <strong>deliberately bypasses the
-application check</strong> and writes straight through the repository port, so that what is
-being proven is the constraint on its own:</p>
+<p>テスト支援のクラスは Spring のプロファイルで隔離されていなければならない。3行です。
+これで「なぜこのエンドポイントが本番に入っているのか」という事故が丸ごと一種類消えます。</p>
+<h2>最後の防衛線はデータベース</h2>
+<p>二重予約は並行性の問題で、アプリケーション層のチェックでは解けません。<strong>2つのリクエストが
+どちらも書き込む前にチェックを通過しうる</strong>からです。実際の保証は、部屋と時間帯に掛けた
+PostgreSQL の <code>EXCLUDE</code> 制約です。</p>
+<p>面白いのは検証の仕方です。テストは<strong>アプリケーション層のチェックを意図的に迂回</strong>して
+リポジトリのポートへ直接書き込みます。証明したいのが制約単体の働きだからです。</p>
 <blockquote>
-<p>L3 (DB boundary): the final defence against double booking — verifying the
-PostgreSQL EXCLUDE constraint. Saves directly to the port without passing the
-application-layer pre-check, and confirms the database alone rejects it.</p>
+<p>L3（DB境界）: ダブルブッキングの最終防衛＝PostgreSQLのEXCLUDE制約の検証。
+事前チェック（application）を通さずポートに直接保存し、DB制約だけで拒否されることを確かめる。</p>
 </blockquote>
-<p>It runs against a real PostgreSQL in Testcontainers, not an in-memory substitute. An
-H2 stand-in would have happily accepted the overlap and the test would have passed
-while the guarantee did not exist. Adjacent bookings that merely touch at the boundary
-are asserted to be allowed, which is where off-by-one errors in time ranges live.</p>
-<h2>Contracts before implementation</h2>
-<p>The OpenAPI document is the source of truth, not a description written afterwards. On
-the frontend side the API types are generated from it, so the client cannot drift from
-the contract without the build noticing.</p>
-<p>Acceptance scenarios can also land on the main branch <em>before</em> the code that satisfies
-them, tagged <code>@pending-implementation</code> and excluded from the default run. That sounds
-minor and is not: it means "what correct means" can be agreed and merged as its own
-reviewable change, instead of arriving fused to an implementation that already assumes
-the answer.</p>
-<p>The acceptance suite lives in its own Gradle source set with a DSL layer between the
-step definitions and the assertions, so the scenarios read as domain language rather
-than as HTTP calls.</p>
-<h2>What this does not show</h2>
-<p>It is a study exercise, so the honest limits are worth stating.</p>
-<p>There is no deployment, no authentication, no load beyond what the tests generate, and
-no operational history — nothing here has been maintained under real usage or changed
-under pressure from real users. The concurrency guarantee is proven at the database
-level but has never met genuine contention.</p>
-<p>What I take from it is narrower than "I can build a booking system", and more useful:
-a boundary that a test enforces stays true, and a boundary that only a diagram
-describes does not.</p>
+<p>実行先は Testcontainers の<strong>実PostgreSQL</strong>で、インメモリの代用品ではありません。
+H2で代用していたら重なりをそのまま受け入れ、<strong>保証が存在しないままテストは通っていた</strong>はずです。
+境界で接するだけの隣接予約は許可されることも検証しています。時間帯のoff-by-oneはそこに住むからです。</p>
+<h2>実装より先に契約</h2>
+<p>OpenAPI文書が真実の源であって、後から書いた説明ではありません。フロントエンド側はそこから
+API型を生成しているので、クライアントがビルドに気づかれずに契約からずれることがありません。</p>
+<p>受け入れシナリオは、それを満たすコードより<strong>先に</strong>mainへ入れられます。
+<code>@pending-implementation</code> を付けて既定の実行から外す仕組みです。</p>
+<p>些細に見えて、そうではありません。<strong>「何が正しいか」を、それ自体レビュー可能な変更として
+合意しマージできる</strong>ということです。答えを既に前提した実装と融合した状態で届くのではなく。</p>
+<p>受け入れテストは専用のGradle source setに置き、step定義とアサーションの間にDSL層を挟んでいます。
+シナリオがHTTP呼び出しではなくドメインの言葉で読めるようにするためです。</p>
+<h2>これが示していないこと</h2>
+<p>学習用なので、限界を正直に書いておきます。</p>
+<p>デプロイはなく、認証もなく、テストが生む以上の負荷もかかっておらず、運用履歴もありません。
+<strong>実際の利用の下で保守されたことも、実ユーザーの圧力の下で変更されたこともありません。</strong>
+並行性の保証はDBレベルでは証明していますが、本物の競合に遭ったことはありません。</p>
+<p>ここから持ち帰るものは「予約システムが作れる」より狭く、そして有用です——
+<strong>テストが強制する境界は真実であり続け、図が説明するだけの境界はそうならない。</strong></p>
 <footer>
-  <span>Operating data generated 2026-08-23 22:45.</span>
-  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  <span>運用データ生成 2026-08-23 23:06</span>
+  <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
-  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+  <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
 </footer>
 </div>
 </body>

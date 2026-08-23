@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Metrics for an AI-driven development template, regenerated daily from session logs, git history, and CI.">
-<title>Operating data — Vazial</title>
+<meta name="description" content="AI駆動開発テンプレートの運用指標。セッションログ・git履歴・CIから日次で再生成。">
+<title>運用データ — Vazial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -48,7 +48,8 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
   font-size: 16px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
@@ -98,7 +99,7 @@ a:focus-visible, .nav a:focus-visible {
 }
 
 h1 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-optical-sizing: auto;
   font-weight: 600;
   font-size: clamp(2rem, 5vw, 2.9rem);
@@ -108,7 +109,7 @@ h1 {
   margin: 0.4rem 0 0;
 }
 h2 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-weight: 600;
   font-size: 1.45rem;
   letter-spacing: -0.01em;
@@ -198,7 +199,7 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="sheet">
-<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/" aria-current="page">Operating data</a></nav>
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">仕事</a><a href="/case/reservation/">ケース: 設計手順</a><a href="/case/harvest/">ケース: 収穫ループ</a><a href="/data/" aria-current="page">運用データ</a></nav>
 
 <style>
 .figures {
@@ -258,127 +259,119 @@ footer a { color: var(--muted); }
 </style>
 
 <header>
-  <span class="eyebrow">Operating data</span>
-  <h1>Measuring whether the method is actually followed</h1>
+  <span class="eyebrow">運用データ</span>
+  <h1>方法論が実際に守られているかを測る</h1>
   <p class="lede">
-    Every number on this page is derived from session logs, git history, and GitHub
-    Actions results. None of them are typed in by hand, and the page rebuilds itself
-    daily. Where the data is unflattering it is left as it is — a measurement that
-    only ever agrees with you is not a measurement.
+    このページの数値はすべて、セッションログ・git履歴・GitHub Actions の結果から導いています。
+    手で入力したものは1つもなく、ページは日次で自分を組み直します。
+    都合の悪い数値もそのまま置いています——<strong>常に自分に同意する測定は、測定ではない</strong>からです。
   </p>
   <p class="note">
-    2026-05-30 to 2026-08-23
-    · mostly claude-sonnet-5, claude-opus-5, claude-opus-4-8
+    2026-05-30 〜 2026-08-23
+    · 主に claude-sonnet-5 / claude-opus-5 / claude-opus-4-8
   </p>
 </header>
 
 <section>
-  <h2>Scale</h2>
-  <div class="figures"><div class="figure"><b>5</b><span>projects</span></div><div class="figure"><b>67</b><span>sessions</span></div><div class="figure"><b>401</b><span>commits</span></div><div class="figure"><b>196</b><span>pull requests</span></div><div class="figure"><b>839</b><span>human prompts</span></div></div>
+  <h2>規模</h2>
+  <div class="figures"><div class="figure"><b>5</b><span>プロジェクト</span></div><div class="figure"><b>67</b><span>セッション</span></div><div class="figure"><b>404</b><span>コミット</span></div><div class="figure"><b>198</b><span>プルリクエスト</span></div><div class="figure"><b>843</b><span>人間の指示</span></div></div>
   <p class="note">
-    “Human prompts” counts only what a person actually typed. Tool results and
-    notifications travel the same channel but are not speech, so they are excluded —
-    conflating them inflates the figure roughly threefold.
+    「人間の指示」は人が実際にタイプしたものだけを数えています。ツールの実行結果や通知は
+    同じ経路を通りますが発話ではないので除外しました。混同すると数字が約3倍に膨らみます。
   </p>
 </section>
 
 <section>
-  <h2>Does verification act as a gate?</h2>
+  <h2>検証はゲートとして働いているか</h2>
   <p>
-    98.0% of 493 runs passed, with
-    7 failures. A high pass rate proves nothing on its own. What matters
-    is that checks <strong>do</strong> fail: a gate that has never stopped anything
-    is decoration.
+    496 回のうち 98.0% が通り、7 件が落ちました。
+    合格率が高いこと自体は何も証明しません。重要なのは<strong>検査が実際に落ちている</strong>ことです。
+    一度も何も止めたことのないゲートは飾りです。
   </p>
-  <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:99.29%"></i><i class="ng" style="width:0.71%"></i></span><span class="count">281 runs, 2 failed</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:96.05%"></i><i class="ng" style="width:3.95%"></i></span><span class="count">76 runs, 3 failed</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">40 runs</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:97.37%"></i><i class="ng" style="width:2.63%"></i></span><span class="count">38 runs, 1 failed</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:89.66%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">29 runs</span></div><div class="tape-row"><span class="name">CI reservation-system</span><span class="tape"><i class="ok" style="width:94.44%"></i><i class="ng" style="width:5.56%"></i></span><span class="count">18 runs, 1 failed</span></div><div class="tape-row"><span class="name">CI reservation-frontend</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">8 runs</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">3 runs</span></div></div>
+  <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:99.29%"></i><i class="ng" style="width:0.71%"></i></span><span class="count">281 run・失敗 2</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:96.05%"></i><i class="ng" style="width:3.95%"></i></span><span class="count">76 run・失敗 3</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">42 run</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:97.37%"></i><i class="ng" style="width:2.63%"></i></span><span class="count">38 run・失敗 1</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:90.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">30 run</span></div><div class="tape-row"><span class="name">CI reservation-system</span><span class="tape"><i class="ok" style="width:94.44%"></i><i class="ng" style="width:5.56%"></i></span><span class="count">18 run・失敗 1</span></div><div class="tape-row"><span class="name">CI reservation-frontend</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">8 run</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">3 run</span></div></div>
   <p class="note">
-    <code>L0 govlint</code> checks the rules themselves and runs on every pull request
-    across all projects.
+    <code>L0 govlint</code> は規程そのものを検査するもので、全プロジェクトのプルリクエストに掛かります。
   </p>
 </section>
 
 <section>
-  <h2>Delegation to role agents</h2>
+  <h2>役割agentへの委譲</h2>
   <p>
-    Each role runs as a separate agent with its own context. The agent writing
-    acceptance tests never sees the implementation; the auditor re-derives the result
-    independently.
+    各役割は自分のコンテキストを持つ別々のagentとして走ります。受け入れテストを書くagentは
+    実装を見ず、監査役は結果を独立に導き直します。
   </p>
-  <div class="roles"><div class="roles-row"><span class="name"><b>Contracts</b> <em>architect</em></span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="count">69 runs · 6.2% tool errors</span></div><div class="roles-row"><span class="name"><b>Screens</b> <em>designer</em></span><span class="track"><span class="fill" style="width:11.6%"></span></span><span class="count">8 runs · 4.9% tool errors</span></div><div class="roles-row"><span class="name"><b>Implementation</b> <em>developer</em></span><span class="track"><span class="fill" style="width:69.6%"></span></span><span class="count">48 runs · 3.4% tool errors</span></div><div class="roles-row"><span class="name"><b>Acceptance tests</b> <em>tester</em></span><span class="track"><span class="fill" style="width:30.4%"></span></span><span class="count">21 runs · 2.2% tool errors</span></div><div class="roles-row"><span class="name"><b>Independent audit</b> <em>reviewer</em></span><span class="track"><span class="fill" style="width:15.9%"></span></span><span class="count">11 runs · 3.4% tool errors</span></div></div>
+  <div class="roles"><div class="roles-row"><span class="name"><b>契約</b> <em>architect</em></span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="count">69 回 · ツールエラー 6.1%</span></div><div class="roles-row"><span class="name"><b>画面</b> <em>designer</em></span><span class="track"><span class="fill" style="width:11.6%"></span></span><span class="count">8 回 · ツールエラー 4.9%</span></div><div class="roles-row"><span class="name"><b>実装</b> <em>developer</em></span><span class="track"><span class="fill" style="width:69.6%"></span></span><span class="count">48 回 · ツールエラー 3.4%</span></div><div class="roles-row"><span class="name"><b>受け入れテスト</b> <em>tester</em></span><span class="track"><span class="fill" style="width:30.4%"></span></span><span class="count">21 回 · ツールエラー 2.2%</span></div><div class="roles-row"><span class="name"><b>独立監査</b> <em>reviewer</em></span><span class="track"><span class="fill" style="width:15.9%"></span></span><span class="count">11 回 · ツールエラー 3.4%</span></div></div>
   <blockquote>
     <p>
-      <strong>Dispatch thins out toward the later roles.</strong>
-      69 contract runs against
-      11 audits — the audit step is not being run as often
-      as my own rules require.
+      <strong>後段の役割ほど起動が減っています。</strong>
+      契約 69 回に対して監査 11 回——
+      監査の段が、自分で決めた規程が求めるほどには回っていません。
     </p>
     <p class="note">
-      This is left visible on purpose. Detecting that I have drifted from my own
-      procedure is the reason the measurement exists at all.
+      意図して見えるままにしています。自分の手順から自分がずれたことを検出できる、
+      というのが測定を置いている理由そのものだからです。
     </p>
   </blockquote>
 </section>
 
 <section>
-  <h2>Flow</h2>
+  <h2>流れ</h2>
   <div class="scroll">
     <table>
-      <tr><th>Measure</th><th>Value</th><th>Detail</th></tr>
+      <tr><th>指標</th><th>値</th><th>内訳</th></tr>
       <tr>
-        <td>Pull requests merged</td>
-        <td>94.9%</td>
-        <td class="note">186 merged</td>
+        <td>プルリクエストのマージ率</td>
+        <td>93.9%</td>
+        <td class="note">186 本がマージ</td>
       </tr>
       <tr>
-        <td>Open to merge, median</td>
-        <td>0.39 h</td>
-        <td class="note">p90 12.53 h · longest 521.98 h</td>
+        <td>作成からマージまで（中央値）</td>
+        <td>0.39 時間</td>
+        <td class="note">p90 12.53 時間 · 最長 521.98 時間</td>
       </tr>
       <tr>
-        <td>Pull request size, median</td>
-        <td>6 files</td>
-        <td class="note">slices are kept small on purpose</td>
+        <td>プルリクエストの大きさ（中央値）</td>
+        <td>6 ファイル</td>
+        <td class="note">スライスを小さく保つ運用</td>
       </tr>
       <tr>
-        <td>Rework</td>
-        <td>7.0%</td>
+        <td>手戻り</td>
+        <td>6.9%</td>
         <td class="note">
-          27 fix/revert commits out of
-          388 that carry a conventional prefix
-          (97% of all commits do)
+          fix / revert 27 件 ÷
+          接頭辞を持つ 391 コミット
+          （全コミットの 97% が接頭辞を持つ）
         </td>
       </tr>
     </table>
   </div>
   <p class="note">
-    The gap between the median and the longest merge time is a real one: some pull
-    requests were left open for weeks. Averaging that away would hide it.
+    中央値と最長の開きは実在します。数週間放置されたプルリクエストがありました。
+    均してしまうと、それが見えなくなります。
   </p>
 </section>
 
 <section>
-  <h2>How these numbers are produced</h2>
+  <h2>この数値の作り方</h2>
   <p>
-    Raw logs stay immutable. A normalising layer folds them into events, metrics are
-    derived from those events, and a publication gate decides what may leave. Changing
-    a definition means discarding the intermediate layers and rebuilding everything —
-    incremental updates drift, and a metric that drifts is worse than no metric.
+    生ログは不変のまま置きます。正規化の層がそれをイベントへ畳み、指標はそのイベントから導き、
+    公開ゲートが外に出てよいものを決めます。定義を変えたら中間層を捨てて全部作り直します——
+    差分更新はずれていき、<strong>ずれる指標は指標が無いより悪い</strong>からです。
   </p>
   <p>
-    The raw logs have three properties that make naive counting wrong: forks duplicate
-    over a fifth of all records, each role agent writes to a separate file, and
-    <code>role: user</code> is not the same thing as a person speaking. Folding those
-    happens in exactly one place. The gate names what may be published rather than
-    what may not, and refuses to publish at all when it finds an absolute path, a
-    credential, or a retired project name.
+    生ログには素朴に数えると間違える3つの癖があります。フォークで全レコードの2割超が重複すること、
+    役割agentがそれぞれ別のファイルへ書くこと、そして <code>role: user</code> は人が話したことと
+    同じではないこと。畳むのは1箇所だけです。ゲートは「出してはいけないもの」ではなく
+    <strong>「出してよいもの」を列挙する方式</strong>で、絶対パス・資格情報・廃止した
+    プロジェクト名を見つけたら公開自体を中止します。
   </p>
 </section>
 
 <footer>
-  <span>Operating data generated 2026-08-23 22:45.</span>
-  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  <span>運用データ生成 2026-08-23 23:06</span>
+  <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
-  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+  <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
 </footer>
 </div>
 </body>

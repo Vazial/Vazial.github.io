@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Four projects used to put an AI-driven development method under load, each labelled with what it actually is.">
-<title>Work — Vazial</title>
+<meta name="description" content="AI駆動開発の方法論に負荷をかけるための4プロジェクト。それぞれが実際に何であるかのラベル付き。">
+<title>仕事 — Vazial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -48,7 +48,8 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
   font-size: 16px;
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
@@ -98,7 +99,7 @@ a:focus-visible, .nav a:focus-visible {
 }
 
 h1 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-optical-sizing: auto;
   font-weight: 600;
   font-size: clamp(2rem, 5vw, 2.9rem);
@@ -108,7 +109,7 @@ h1 {
   margin: 0.4rem 0 0;
 }
 h2 {
-  font-family: Fraunces, Georgia, serif;
+  font-family: Fraunces, Georgia, "Yu Mincho", serif;
   font-weight: 600;
   font-size: 1.45rem;
   letter-spacing: -0.01em;
@@ -198,79 +199,70 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="sheet">
-<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/" aria-current="page">Work</a><a href="/case/reservation/">Case: DDD</a><a href="/case/harvest/">Case: Feedback loop</a><a href="/data/">Operating data</a></nav>
-<p><span class="eyebrow">Work</span></p>
-<h1>Four projects, and what each one was for</h1>
+<nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/" aria-current="page">仕事</a><a href="/case/reservation/">ケース: 設計手順</a><a href="/case/harvest/">ケース: 収穫ループ</a><a href="/data/">運用データ</a></nav>
+<p><span class="eyebrow">仕事</span></p>
+<h1>4つのプロジェクトと、それぞれの役目</h1>
 <p class="lede">
-These are not four products. They are four different shapes of problem, used to find
-out where the method holds and where it tears. Each is labelled with what it actually
-is, because a study exercise presented as a running service is worse than either.
+これは4つの製品ではありません。<strong>4つの異なる形の問題</strong>で、
+方法論がどこで持ちこたえ、どこで破れるかを見るために使っています。
+それぞれに「実際に何であるか」を書いています。学習用のものを稼働中のサービスとして見せるのは、
+どちらの見せ方より悪いからです。
 </p>
-<p>All four live inside
-<a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a> under
-<code>projects/</code>, alongside the rules they were built under.</p>
+<p>4つとも <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a> の
+<code>projects/</code> の下に、それが従った規程と並んで置いてあります。</p>
 <hr>
-<h2>The template itself</h2>
-<p>The language-agnostic foundation: eleven principles, five role agents with separated
-context, five verification levels, and 58 architecture decision records covering the
-governance itself. This is the piece worth reading first, and the only one I would
-call finished enough to reuse.</p>
-<p>The two case studies both come out of it —
-<a href="/case/reservation/">the design procedure</a> shows it applied to a domain,
-<a href="/case/harvest/">the feedback loop</a> shows it correcting itself.</p>
-<p><a href="https://github.com/Vazial/ai-driven-dev-template">Repository →</a></p>
+<h2>テンプレート本体</h2>
+<p>言語に依存しない土台です。信条11条、コンテキストを分離した5つの役割agent、5段の検証、
+そしてガバナンス自体を扱う58本のADR。最初に読む価値があるのはここで、<strong>再利用できる程度に
+仕上がっていると言えるのもここだけ</strong>です。</p>
+<p>ケーススタディ2本はどちらもここから出ています——
+<a href="/case/reservation/">設計手順</a>はドメインへの適用、
+<a href="/case/harvest/">収穫ループ</a>は自己修正です。</p>
+<p><a href="https://github.com/Vazial/ai-driven-dev-template">リポジトリ →</a></p>
 <hr>
-<h2>Session Radar <span class="tag live">Running</span></h2>
-<p>The only one of these that actually runs. Every morning at 08:00 JST a GitHub Actions
-schedule fires, pulls events from the connpass API, filters them against interest
-criteria held as YAML in the repository, and delivers a single digest to Discord. No
-screens, no persistent store; external I/O is limited to one fetch and one webhook,
-behind a <code>NotifierPort</code> so the delivery channel is replaceable.</p>
-<p>It went into real operation on 2026-08-23 and the schedule has been firing on its own
-since. Five ADRs. It is small on purpose — the interesting part is that the method
-produced something that survives contact with a live external API and keeps running
-without me.</p>
+<h2>Session Radar <span class="tag live">稼働中</span></h2>
+<p>4つのうち<strong>実際に動いているのはこれだけ</strong>です。毎朝08:00（JST）にGitHub Actionsのスケジュールが
+発火し、connpass APIからイベントを取得、リポジトリ内のYAMLに書いた興味条件で絞り込み、
+Discordへ1通のダイジェストを届けます。画面も永続ストアも持たず、外部I/Oは取得と配信の2つだけ。
+配信先は <code>NotifierPort</code> の背後にあるので差し替えられます。</p>
+<p>2026-08-23に実運用へ入り、以降スケジュールは自力で発火し続けています。ADR 5本。
+<strong>小さいのは意図的</strong>で、面白いのは、方法論の産物が生きた外部APIと接触しながら、
+私が手を入れなくても動き続けているという点です。</p>
 <hr>
-<h2>Dining Radar <span class="tag wip">In progress</span></h2>
-<p>The most heavily worked project of the four, and the one that wore the method down
-hardest: 26 architecture decisions and 26 logged friction entries, which is roughly
-one recorded failure per decision. A Django pipeline for finding somewhere to eat
-within a bounded area.</p>
-<p>Still being improved, and not deployed. Its value here is the iteration count. Most of
-what I know about where the template chafes came from this project, including the
-decision to strip a real place name out of a public repository — and the follow-up
-finding that renaming the project did not remove the name from everywhere it had
-already spread.</p>
+<h2>Dining Radar <span class="tag wip">作り込み中</span></h2>
+<p>4つの中で最も手を入れたプロジェクトで、方法論を一番すり減らしました——
+<strong>ADR 26本、frictionログ 26件</strong>。決定1つにつき記録された失敗が1つ、という比率です。
+限られた範囲から食事場所を探すDjangoのパイプライン。</p>
+<p>まだ改善中で、デプロイしていません。ここでの価値は<strong>反復回数</strong>です。テンプレートがどこで
+軋むかについて私が知っていることの大半は、このプロジェクトから来ています。実在の地名を
+公開リポジトリから外した判断と、その後の発見——<strong>プロジェクト名を変えても、既に広がった先からは
+名前が消えていなかった</strong>——も含みます。</p>
 <hr>
-<h2>Meeting room booking — backend <span class="tag study">Study exercise</span></h2>
-<p>Built to practise domain-driven design end to end, from EventStorming through
-aggregate boundaries, concurrency control and state modelling, into Java 21 and Spring
-Boot. Eight ADRs plus acceptance scenarios in Gherkin.</p>
-<p><strong>Not built out, and not intended to be operated.</strong> What it demonstrates is
-engineering practice rather than a product: the domain layer holds zero framework
-imports and a test enforces that, double-booking is verified against a real PostgreSQL
-constraint rather than a mock, and the acceptance suite is separated from the
-implementation by a DSL layer.</p>
-<p><a href="/case/reservation/">Read the case study →</a></p>
+<h2>会議室予約 — バックエンド <span class="tag study">学習用</span></h2>
+<p>ドメイン駆動設計を通しで練習するために作りました。EventStorming から集約境界・並行制御・
+状態のモデリングを経て、Java 21 と Spring Boot へ。ADR 8本と Gherkin の受け入れシナリオ。</p>
+<p><strong>作り込んでおらず、運用する予定もありません。</strong> ここで示せるのは製品ではなく<strong>技術実践</strong>です。
+ドメイン層はフレームワークのimportを1つも持たず、そのことをテストが強制しています。
+二重予約はモックではなく実PostgreSQLの制約で検証しています。受け入れテストは
+DSL層で実装から隔てています。</p>
+<p><a href="/case/reservation/">ケーススタディを読む →</a></p>
 <hr>
-<h2>Meeting room booking — frontend <span class="tag study">Study exercise</span></h2>
-<p>The companion to the above, and where the contract-first idea got its real test: the
-API types are generated from the OpenAPI document rather than hand-copied, so the
-frontend cannot silently drift from the contract. Each endpoint can be switched from
-mock to real backend independently, one operation at a time, which made it possible to
-close the loop on availability, booking and cancellation without a big-bang
-integration.</p>
-<p>88 unit tests, 9 Playwright end-to-end scenarios, 9 ADRs.</p>
+<h2>会議室予約 — フロントエンド <span class="tag study">学習用</span></h2>
+<p>上の対になるもので、<strong>契約先行の考えが本当に試された場所</strong>です。API型はOpenAPI文書から
+生成しているので、手で写した型が契約から静かにずれることがありません。各エンドポイントは
+モックと実バックエンドを<strong>個別に</strong>切り替えられるので、空き確認・予約・キャンセルのループを
+一括結合なしに閉じられました。</p>
+<p>単体テスト88件、Playwrightのend-to-end 9本、ADR 9本。</p>
 <hr>
-<h2>What is not here</h2>
-<p>Older repositories on my GitHub profile — puzzle solvers, exercise answers — are from
-learning and are not representative. Two current projects are private: a stock
-screener and a set of games built on this same template.</p>
+<h2>ここに無いもの</h2>
+<p>GitHubプロフィールにある古いリポジトリ——パズルの解答や演習の答え——は学習期のもので、
+現在を代表しません。進行中の2つはprivateです（株式スクリーナーと、同じテンプレートで作っている
+ゲーム群）。</p>
 <footer>
-  <span>Operating data generated 2026-08-23 22:45.</span>
-  <span>Source: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  <span>運用データ生成 2026-08-23 23:06</span>
+  <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
-  <span>Primary records — ADRs and friction logs — are written in Japanese.</span>
+  <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
 </footer>
 </div>
 </body>
