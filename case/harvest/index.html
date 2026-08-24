@@ -7,197 +7,261 @@
 <title>自分のずれを捕まえるループ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;600&family=Chivo+Mono:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
 :root {
-  --paper:  #F2F3F0;
-  --raised: #FBFBF9;
-  --ink:    #1B2320;
-  --muted:  #6B7570;
-  --rule:   #D7DAD6;
+  --paper:  #EEF1F0;
+  --raised: #F8FAF9;
+  --grid:   #D8DFDD;
+  --rule:   #6E7F7C;
+  --hair:   #B9C4C1;
+  --ink:    #1F292C;
+  --muted:  #5E716E;
   --accent: #2F6F5E;
-  --alarm:  #9A3B2E;
-  --tape:   #E1E4E0;
+  --amber:  #9A6A1F;
+  --alarm:  #B4442A;
+  --tape:   #C8D1CF;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper:  #141816;
-    --raised: #1B211E;
-    --ink:    #E4E8E3;
-    --muted:  #8A948E;
-    --rule:   #272E2A;
-    --accent: #5FAE96;
-    --alarm:  #CE7360;
-    --tape:   #262D29;
+    --paper:  #1B1F22;
+    --raised: #22272A;
+    --grid:   #242A2E;
+    --rule:   #4A545A;
+    --hair:   #333B40;
+    --ink:    #D6DBD8;
+    --muted:  #7D878D;
+    --accent: #7FB98F;
+    --amber:  #D4A04E;
+    --alarm:  #C0614C;
+    --tape:   #333A3F;
   }
 }
 :root[data-theme="dark"] {
-  --paper:  #141816;
-  --raised: #1B211E;
-  --ink:    #E4E8E3;
-  --muted:  #8A948E;
-  --rule:   #272E2A;
-  --accent: #5FAE96;
-  --alarm:  #CE7360;
-  --tape:   #262D29;
+  --paper:  #1B1F22;
+  --raised: #22272A;
+  --grid:   #242A2E;
+  --rule:   #4A545A;
+  --hair:   #333B40;
+  --ink:    #D6DBD8;
+  --muted:  #7D878D;
+  --accent: #7FB98F;
+  --amber:  #D4A04E;
+  --alarm:  #C0614C;
+  --tape:   #333A3F;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: var(--paper);
   color: var(--ink);
-  font-family: "Public Sans", -apple-system, "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", "Noto Sans JP", sans-serif;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.75;
+  line-height: 1.85;
   -webkit-font-smoothing: antialiased;
 }
 
 a { color: var(--accent); text-underline-offset: 0.18em; }
-a:focus-visible, .nav a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
+/* 図面の枠。四隅にコーナーマークが立つ */
 .sheet {
-  max-width: 62rem;
-  margin: 0 auto;
-  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3.5rem) 5rem;
+  max-width: 64rem;
+  margin: clamp(0.75rem, 2vw, 1.5rem) auto;
+  padding: clamp(1.4rem, 4vw, 2.4rem) clamp(1.1rem, 4vw, 2.6rem) 0;
+  border: 1px solid var(--rule);
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2.4rem;
 }
+.sheet::before, .sheet::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  width: 13px;
+  height: 13px;
+  border-top: 2px solid var(--ink);
+}
+.sheet::before { left: -1px; border-left: 2px solid var(--ink); }
+.sheet::after { right: -1px; border-right: 2px solid var(--ink); }
 
-/* 上部の帯。現在地を実線で示す */
+/* 上部の帯。ランプが現在地の代わりに灯る */
 .nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.4rem;
-  align-items: baseline;
+  gap: 1.1rem;
+  align-items: center;
   border-bottom: 1px solid var(--rule);
-  padding-bottom: 0.9rem;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.78rem;
+  padding-bottom: 0.85rem;
+  font-family: "Archivo Narrow", "Helvetica Neue", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
 }
 .nav a { color: var(--muted); text-decoration: none; }
 .nav a:hover { color: var(--ink); }
-.nav a[aria-current="page"] {
-  color: var(--ink);
-  border-bottom: 2px solid var(--accent);
-  padding-bottom: 0.2rem;
+.nav a[aria-current="page"] { color: var(--ink); }
+.nav a[aria-current="page"]::before {
+  content: "";
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 0.45rem;
+  vertical-align: 0.05em;
 }
-.nav .home { color: var(--ink); font-weight: 500; margin-right: auto; }
-
-.eyebrow {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
+.nav .home {
+  color: var(--ink);
+  font-weight: 600;
   text-transform: uppercase;
-  color: var(--muted);
+  margin-right: auto;
+}
+
+/* 図面のラベル。SUBJECT — 01 の類 */
+.eyebrow {
+  font-family: "Archivo Narrow", "Helvetica Neue", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--alarm);
 }
 
 h1 {
-  font-family: Fraunces, Georgia, "Hiragino Mincho ProN", "Yu Mincho",
-    "Noto Serif JP", serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
-  font-size: clamp(2rem, 5vw, 2.9rem);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  font-size: clamp(1.85rem, 4.6vw, 2.5rem);
+  line-height: 1.34;
   text-wrap: balance;
-  margin: 0.4rem 0 0;
+  margin: 0.5rem 0 0;
 }
 h2 {
-  font-family: Fraunces, Georgia, "Hiragino Mincho ProN", "Yu Mincho",
-    "Noto Serif JP", serif;
-  font-weight: 600;
-  font-size: 1.45rem;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-size: 1.3rem;
+  line-height: 1.5;
   text-wrap: balance;
-  margin: 2.4rem 0 0;
+  margin: 2.6rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--hair);
 }
-h3 {
-  font-size: 1.02rem;
-  font-weight: 600;
-  margin: 1.8rem 0 0;
-}
+h3 { font-size: 1.02rem; font-weight: 700; margin: 1.9rem 0 0; }
 
-p, ul, ol { margin: 0.9rem 0 0; max-width: 64ch; }
+p, ul, ol { margin: 0.9rem 0 0; max-width: 62ch; }
 li { margin-top: 0.3rem; }
-.lede { font-size: 1.08rem; }
-.note { color: var(--muted); font-size: 0.92rem; }
+.lede { font-size: 1.06rem; }
+.note { color: var(--muted); font-size: 0.9rem; }
 
+/* 引出線。図面で対象を指す線と同じ役割 */
 blockquote {
-  margin: 1.4rem 0 0;
-  padding: 0.9rem 1.3rem;
-  background: var(--raised);
-  border-left: 2px solid var(--accent);
-  max-width: 64ch;
+  margin: 1.5rem 0 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 1px solid var(--alarm);
+  max-width: 62ch;
 }
 blockquote p { margin-top: 0; }
 blockquote p + p { margin-top: 0.7rem; }
 
 code {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.86em;
+  font-family: "Chivo Mono", ui-monospace, monospace;
+  font-size: 0.84em;
 }
 pre {
   background: var(--raised);
   border: 1px solid var(--rule);
   padding: 1rem 1.2rem;
   overflow-x: auto;
-  font-size: 0.82rem;
-  line-height: 1.6;
-  margin: 1.4rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  margin: 1.5rem 0 0;
 }
 pre code { font-size: inherit; }
 
-table { border-collapse: collapse; width: 100%; font-size: 0.94rem; margin: 1.4rem 0 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; margin: 1.5rem 0 0; }
 th, td {
   text-align: left;
-  padding: 0.55rem 1rem 0.55rem 0;
-  border-bottom: 1px solid var(--rule);
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--hair);
   vertical-align: top;
 }
 th {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
+  font-family: "Archivo Narrow", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
   font-weight: 400;
+  background: var(--raised);
 }
 .scroll { overflow-x: auto; }
 
 /* 状態のラベル。稼働中と学習用を取り違えさせない */
 .tag {
   display: inline-block;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.64rem;
-  letter-spacing: 0.12em;
+  font-family: "Archivo Narrow", sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   border: 1px solid currentColor;
-  border-radius: 2px;
-  padding: 0.1rem 0.45rem;
+  padding: 0.05rem 0.45rem;
   vertical-align: 0.12em;
 }
 .tag.live { color: var(--accent); }
 .tag.study, .tag.wip { color: var(--muted); }
 .tag.work { color: var(--ink); }
 
-footer {
-  border-top: 1px solid var(--rule);
-  margin-top: 1rem;
-  padding-top: 1.4rem;
-  color: var(--muted);
-  font-size: 0.84rem;
+figure { margin: 2.2rem 0 0; }
+figcaption { max-width: 62ch; }
+
+/* 表題欄。図面の右下にある、その図面が何かを書く枠 */
+.titleblock {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr 1fr 0.7fr;
+  border: 1px solid var(--ink);
+  margin: 2.6rem calc(-1 * clamp(1.1rem, 4vw, 2.6rem)) 0;
+  border-left: none;
+  border-right: none;
+}
+.titleblock > div {
+  padding: 0.7rem clamp(1.1rem, 4vw, 2.6rem) 0.7rem 0;
+  border-right: 1px solid var(--rule);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.15rem;
 }
-footer a { color: var(--muted); }
+.titleblock > div:first-child { padding-left: clamp(1.1rem, 4vw, 2.6rem); }
+.titleblock > div:last-child { border-right: none; }
+.titleblock dt {
+  font-family: "Archivo Narrow", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+.titleblock dd {
+  margin: 0;
+  font-family: "Chivo Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+}
+.titleblock dd.name {
+  font-family: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-weight: 700;
+}
+.titleblock a { color: var(--muted); }
+
+@media (max-width: 40rem) {
+  .titleblock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .titleblock > div:nth-child(2) { border-right: none; }
+  .titleblock > div:nth-child(3) { border-top: 1px solid var(--rule); }
+  .titleblock > div:nth-child(4) { border-top: 1px solid var(--rule); border-right: none; }
+  .titleblock > div:nth-child(3) { padding-left: clamp(1.1rem, 4vw, 2.6rem); }
+}
 </style>
 </head>
 <body>
@@ -256,7 +320,7 @@ footer a { color: var(--muted); }
 意味がほぼ反転します。捕まえる前に一度これが起きました。</p>
 <figure style="margin:2.2rem 0 0"><div class="scroll"><svg viewBox="0 0 700 260" role="img" aria-label="生ログから正規化索引を作り、候補を出し、人間の承認を経て台帳に載り、規程変更へ至る。規程変更は開発の進め方に戻る" style="min-width:600px;max-width:720px;width:100%;height:auto;display:block;margin:0 auto" fill="none" stroke-linecap="round" stroke-linejoin="round">
 <defs><marker id="hl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" stroke="none"/></marker></defs>
-<rect x="14" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="28" y="108" fill="currentColor" stroke="none" font-size="13">生ログ</text><text x="28" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">jsonl・不変</text><rect x="152" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="166" y="108" fill="currentColor" stroke="none" font-size="13">正規化索引</text><text x="166" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">重複排除・agent結合</text><rect x="302" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="316" y="108" fill="currentColor" stroke="none" font-size="13">候補</text><text x="316" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">閾値以上のみ</text><rect x="452" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="466" y="108" fill="currentColor" stroke="none" font-size="13">台帳</text><text x="466" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">friction 1件</text><rect x="586" y="86" width="96" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="600" y="108" fill="currentColor" stroke="none" font-size="13">規程変更</text><text x="600" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">ADR</text>
+<rect x="14" y="86" width="100" height="52" rx="2" stroke="var(--rule)" stroke-width="1"/><text x="28" y="108" fill="currentColor" stroke="none" font-size="13">生ログ</text><text x="28" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">jsonl・不変</text><rect x="152" y="86" width="100" height="52" rx="2" stroke="var(--rule)" stroke-width="1"/><text x="166" y="108" fill="currentColor" stroke="none" font-size="13">正規化索引</text><text x="166" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">重複排除・agent結合</text><rect x="302" y="86" width="100" height="52" rx="2" stroke="var(--rule)" stroke-width="1"/><text x="316" y="108" fill="currentColor" stroke="none" font-size="13">候補</text><text x="316" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">閾値以上のみ</text><rect x="452" y="86" width="100" height="52" rx="2" stroke="var(--rule)" stroke-width="1"/><text x="466" y="108" fill="currentColor" stroke="none" font-size="13">台帳</text><text x="466" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">friction 1件</text><rect x="586" y="86" width="96" height="52" rx="2" stroke="var(--rule)" stroke-width="1"/><text x="600" y="108" fill="currentColor" stroke="none" font-size="13">規程変更</text><text x="600" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">ADR</text>
 <line x1="118" y1="112" x2="146" y2="112" stroke="currentColor" stroke-width="1.2" marker-end="url(#hl-a)"/>
 <line x1="256" y1="112" x2="296" y2="112" stroke="currentColor" stroke-width="1.2" marker-end="url(#hl-a)"/>
 <line x1="406" y1="112" x2="446" y2="112" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#hl-a)"/>
@@ -341,12 +405,19 @@ footer a { color: var(--muted); }
 <p>測ったからといって、それについて結論を出す資格が生まれるわけではありません。
 <strong>そうであるかのように見せるダッシュボードは、ダッシュボードが無いより悪い。</strong>
 ここでの出力は人間が読むための候補であって、判定ではありません。</p>
-<footer>
-  <span>運用データ生成 2026-08-24 23:36</span>
-  <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
-  · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
-  <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
-</footer>
+<dl class="titleblock">
+  <div><dt>Title</dt><dd class="name">AI駆動開発 — 運用記録</dd></div>
+  <div><dt>Generated</dt><dd>2026-08-25 00:02</dd></div>
+  <div><dt>Source</dt><dd>log · git · CI</dd></div>
+  <div><dt>Sheet</dt><dd>4 / 5</dd></div>
+</dl>
 </div>
+<p class="note" style="max-width:64rem;margin:0.9rem auto 3rem;
+   padding:0 clamp(1.1rem,4vw,2.6rem);font-size:0.8rem">
+  出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
+  · <a href="https://github.com/Vazial">github.com/Vazial</a>
+  <span lang="en"> — Written in Japanese. Summary in English on the
+  <a href="/">front page</a>.</span>
+</p>
 </body>
 </html>
