@@ -254,7 +254,7 @@ footer a { color: var(--muted); }
 <p>3つ目が一番効きます。役割agentのログでの <code>role: user</code> は<strong>orchestratorがそのagentへ渡した
 ブリーフ</strong>です。素朴に数えると <em>私がagentへ出した指示</em> が <em>人間による訂正</em> に化ける——
 意味がほぼ反転します。捕まえる前に一度これが起きました。</p>
-<figure style="margin:2.2rem 0 0"><svg viewBox="0 0 700 260" role="img" aria-label="生ログから正規化索引を作り、候補を出し、人間の承認を経て台帳に載り、規程変更へ至る。規程変更は開発の進め方に戻る" style="max-width:100%;height:auto;display:block;margin:0 auto" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<figure style="margin:2.2rem 0 0"><div class="scroll"><svg viewBox="0 0 700 260" role="img" aria-label="生ログから正規化索引を作り、候補を出し、人間の承認を経て台帳に載り、規程変更へ至る。規程変更は開発の進め方に戻る" style="min-width:520px;max-width:100%;height:auto;display:block;margin:0 auto" fill="none" stroke-linecap="round" stroke-linejoin="round">
 <defs><marker id="hl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" stroke="none"/></marker></defs>
 <rect x="14" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="28" y="108" fill="currentColor" stroke="none" font-size="13">生ログ</text><text x="28" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">jsonl・不変</text><rect x="152" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="166" y="108" fill="currentColor" stroke="none" font-size="13">正規化索引</text><text x="166" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">重複排除・agent結合</text><rect x="302" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="316" y="108" fill="currentColor" stroke="none" font-size="13">候補</text><text x="316" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">閾値以上のみ</text><rect x="452" y="86" width="100" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="466" y="108" fill="currentColor" stroke="none" font-size="13">台帳</text><text x="466" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">friction 1件</text><rect x="586" y="86" width="96" height="52" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/><text x="600" y="108" fill="currentColor" stroke="none" font-size="13">規程変更</text><text x="600" y="125" fill="currentColor" stroke="none" font-size="11" opacity="0.72">ADR</text>
 <line x1="118" y1="112" x2="146" y2="112" stroke="currentColor" stroke-width="1.2" marker-end="url(#hl-a)"/>
@@ -270,7 +270,7 @@ footer a { color: var(--muted); }
 <path d="M634,140 C634,214 300,214 60,214 L60,146" stroke="currentColor" stroke-width="1.2"
       stroke-dasharray="4 4" marker-end="url(#hl-a)" opacity="0.8"/>
 <text x="286" y="232" fill="currentColor" stroke="none" font-size="11" opacity="0.72">規程が変わると、次のセッションのログが変わる</text>
-</svg><figcaption class="note" style="margin-top:0.7rem">生ログは不変のまま、正規化・収穫・承認を経て規程の変更まで戻る。自動でないのは1箇所だけ。</figcaption></figure>
+</svg></div><figcaption class="note" style="margin-top:0.7rem">生ログは不変のまま、正規化・収穫・承認を経て規程の変更まで戻る。自動でないのは1箇所だけ。</figcaption></figure>
 
 <p>正規化は1箇所だけで行い、その上の道具はすべて生ログではなくこの索引を読みます。
 全再構築が約2秒なので、差分更新せずに毎回作り直しています。</p>
@@ -342,7 +342,7 @@ footer a { color: var(--muted); }
 <strong>そうであるかのように見せるダッシュボードは、ダッシュボードが無いより悪い。</strong>
 ここでの出力は人間が読むための候補であって、判定ではありません。</p>
 <footer>
-  <span>運用データ生成 2026-08-24 23:31</span>
+  <span>運用データ生成 2026-08-24 23:34</span>
   <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
   <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
