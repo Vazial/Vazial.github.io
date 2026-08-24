@@ -169,14 +169,14 @@ blockquote p + p { margin-top: 0.7rem; }
 /* 注記。図面に赤で書き込む注と同じ扱いで、本文への補足はこちら。
    引出線が左の余白から入り、縦線に取り付いて、採番されたラベルが立つ。 */
 .sheet { counter-reset: annot; }
-.sheet p.note {
+.sheet p.annot {
   counter-increment: annot;
   position: relative;
   margin-top: 1.7rem;
   padding-left: 1.15rem;
   border-left: 1px solid var(--alarm);
 }
-.sheet p.note::before {
+.sheet p.annot::before {
   content: "Note " counter(annot, decimal-leading-zero);
   display: block;
   font-family: "Archivo Narrow", "Helvetica Neue", sans-serif;
@@ -187,7 +187,7 @@ blockquote p + p { margin-top: 0.7rem; }
   margin-bottom: 0.15rem;
 }
 /* 余白から取り付く引出線の横棒 */
-.sheet p.note::after {
+.sheet p.annot::after {
   content: "";
   position: absolute;
   left: -0.65rem;
@@ -196,8 +196,9 @@ blockquote p + p { margin-top: 0.7rem; }
   height: 1px;
   background: var(--alarm);
 }
-/* 図の説明文は本文の注記ではないので採番しない */
-figcaption.note { border-left: none; padding-left: 0; }
+/* 引用の中の補足は、引用の線と二重になるので注記にしない */
+blockquote p.annot { border-left: none; padding-left: 0; }
+blockquote p.annot::after { display: none; }
 
 code {
   font-family: "Chivo Mono", ui-monospace, monospace;
@@ -468,7 +469,7 @@ API境界は物理的な分離であって、<strong>内側の構造は何も保
 そして決められなかったことは、決める仕組みが無かったから決められなかった。</p>
 <dl class="titleblock">
   <div><dt>Title</dt><dd class="name">AI駆動開発 — 運用記録</dd></div>
-  <div><dt>Generated</dt><dd>2026-08-25 07:49</dd></div>
+  <div><dt>Generated</dt><dd>2026-08-25 07:51</dd></div>
   <div><dt>Source</dt><dd>log · git · CI</dd></div>
   <div><dt>Sheet</dt><dd>3 / 5</dd></div>
 </dl>
