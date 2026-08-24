@@ -295,11 +295,11 @@ figcaption { max-width: 62ch; }
 <p>キャンセルされた予約は、誰かがセットした「キャンセル状態」にあるのではありません。
 <strong>ある時点で何かが起きた</strong>のであって、状態はそこから導く結論です。</p>
 <p>だから保存するのは <code>cancelledAt</code> だけ。状態は導出し、導出は1箇所にしか置きません。</p>
-<p><code>java
-/** cancelledAt の有無から状態を導出する唯一の場所。 */
+<pre><code class="language-java">/** cancelledAt の有無から状態を導出する唯一の場所。 */
 public static ReservationStatus of(LocalDateTime cancelledAt) {
     return cancelledAt == null ? CONFIRMED : CANCELLED;
-}</code></p>
+}
+</code></pre>
 <p>コードより重要なのはクラスのドキュメントに書いた規則です——
 <strong>他のどのクラスも <code>cancelledAt</code> を直接見て「キャンセル済みか」を判定してはならない</strong>。</p>
 <p>同じ問いに真実の源が2つあると、状態モデルはそこから腐ります。ある呼び出し側はタイムスタンプを見て、
@@ -365,11 +365,11 @@ API境界は物理的な分離であって、<strong>内側の構造は何も保
 リポジトリを必要として、importを1行足す。それで図は静かに真実でなくなります。</p>
 <p>だから方向を<strong>テスト</strong>にしました。<code>ArchitectureTest</code> は、ドメインがフレームワークを
 知った時点でビルドを落とします。</p>
-<p><code>java
-noClasses().that().resideInAPackage("reservation.domain..")
+<pre><code class="language-java">noClasses().that().resideInAPackage(&quot;reservation.domain..&quot;)
         .should().dependOnClassesThat().resideInAnyPackage(
-                "reservation.application..", "reservation.adapter..",
-                "org.springframework..", "jakarta..", "javax..");</code></p>
+                &quot;reservation.application..&quot;, &quot;reservation.adapter..&quot;,
+                &quot;org.springframework..&quot;, &quot;jakarta..&quot;, &quot;javax..&quot;);
+</code></pre>
 <figure style="margin:2.2rem 0 0"><div class="scroll"><svg viewBox="0 0 660 300" role="img" aria-label="adapterからapplication、domainへの一方向の依存をArchUnitが強制する。統合テストはアプリケーション層を迂回してポートへ直接書き、データベースの制約だけで拒否されることを確かめる" style="min-width:600px;max-width:720px;width:100%;height:auto;display:block;margin:0 auto" fill="none" stroke-linecap="round" stroke-linejoin="round">
 <defs><marker id="le-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" stroke="none"/></marker></defs>
 <rect x="150" y="26" width="220" height="46" rx="2" stroke="var(--rule)" stroke-width="1"/>
@@ -408,9 +408,9 @@ noClasses().that().resideInAPackage("reservation.domain..")
 <h3>書いておいて一番よかった規則</h3>
 <p>受け入れテストには、動いているシステムへの継ぎ目が要ります。時計を進めるとか、データを仕込むとか。
 <strong>その継ぎ目は裏口で、裏口は出荷されます。</strong></p>
-<p><code>java
-classes().that().haveSimpleNameStartingWith("TestSupport")
-        .should().beAnnotatedWith(Profile.class)</code></p>
+<pre><code class="language-java">classes().that().haveSimpleNameStartingWith(&quot;TestSupport&quot;)
+        .should().beAnnotatedWith(Profile.class)
+</code></pre>
 <p>テスト支援のクラスは Spring のプロファイルで隔離されていなければならない。3行です。
 これで「なぜこのエンドポイントが本番に入っているのか」という事故が丸ごと一種類消えます。</p>
 <h2>実装より先に契約</h2>
@@ -435,7 +435,7 @@ classes().that().haveSimpleNameStartingWith("TestSupport")
 そして決められなかったことは、決める仕組みが無かったから決められなかった。</p>
 <dl class="titleblock">
   <div><dt>Title</dt><dd class="name">AI駆動開発 — 運用記録</dd></div>
-  <div><dt>Generated</dt><dd>2026-08-25 00:02</dd></div>
+  <div><dt>Generated</dt><dd>2026-08-25 00:06</dd></div>
   <div><dt>Source</dt><dd>log · git · CI</dd></div>
   <div><dt>Sheet</dt><dd>3 / 5</dd></div>
 </dl>
