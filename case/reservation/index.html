@@ -156,15 +156,48 @@ li { margin-top: 0.3rem; }
 .lede { font-size: 1.06rem; }
 .note { color: var(--muted); font-size: 0.9rem; }
 
-/* 引出線。図面で対象を指す線と同じ役割 */
+/* 引用。他人の言葉・一次資料からの写しなので、線は中立の罫にする */
 blockquote {
   margin: 1.5rem 0 0;
   padding: 0.2rem 0 0.2rem 1.1rem;
-  border-left: 1px solid var(--alarm);
+  border-left: 1px solid var(--rule);
   max-width: 62ch;
 }
 blockquote p { margin-top: 0; }
 blockquote p + p { margin-top: 0.7rem; }
+
+/* 注記。図面に赤で書き込む注と同じ扱いで、本文への補足はこちら。
+   引出線が左の余白から入り、縦線に取り付いて、採番されたラベルが立つ。 */
+.sheet { counter-reset: annot; }
+.sheet p.note {
+  counter-increment: annot;
+  position: relative;
+  margin-top: 1.7rem;
+  padding-left: 1.15rem;
+  border-left: 1px solid var(--alarm);
+}
+.sheet p.note::before {
+  content: "Note " counter(annot, decimal-leading-zero);
+  display: block;
+  font-family: "Archivo Narrow", "Helvetica Neue", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--alarm);
+  margin-bottom: 0.15rem;
+}
+/* 余白から取り付く引出線の横棒 */
+.sheet p.note::after {
+  content: "";
+  position: absolute;
+  left: -0.65rem;
+  top: 0.62rem;
+  width: 0.65rem;
+  height: 1px;
+  background: var(--alarm);
+}
+/* 図の説明文は本文の注記ではないので採番しない */
+figcaption.note { border-left: none; padding-left: 0; }
 
 code {
   font-family: "Chivo Mono", ui-monospace, monospace;
@@ -435,7 +468,7 @@ API境界は物理的な分離であって、<strong>内側の構造は何も保
 そして決められなかったことは、決める仕組みが無かったから決められなかった。</p>
 <dl class="titleblock">
   <div><dt>Title</dt><dd class="name">AI駆動開発 — 運用記録</dd></div>
-  <div><dt>Generated</dt><dd>2026-08-25 00:06</dd></div>
+  <div><dt>Generated</dt><dd>2026-08-25 07:49</dd></div>
   <div><dt>Source</dt><dd>log · git · CI</dd></div>
   <div><dt>Sheet</dt><dd>3 / 5</dd></div>
 </dl>
