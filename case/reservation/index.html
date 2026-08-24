@@ -306,6 +306,39 @@ noClasses().that().resideInAPackage("reservation.domain..")
         .should().dependOnClassesThat().resideInAnyPackage(
                 "reservation.application..", "reservation.adapter..",
                 "org.springframework..", "jakarta..", "javax..");</code></p>
+<figure style="margin:2.2rem 0 0"><svg viewBox="0 0 660 300" role="img" aria-label="adapterからapplication、domainへの一方向の依存をArchUnitが強制する。統合テストはアプリケーション層を迂回してポートへ直接書き、データベースの制約だけで拒否されることを確かめる" style="max-width:100%;height:auto;display:block;margin:0 auto" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<defs><marker id="le-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" stroke="none"/></marker></defs>
+<rect x="150" y="26" width="220" height="46" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+<text x="168" y="47" fill="currentColor" stroke="none" font-size="13">adapter</text>
+<text x="168" y="63" fill="currentColor" stroke="none" font-size="11" opacity="0.72">API・永続化</text>
+
+<rect x="150" y="106" width="220" height="46" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+<text x="168" y="127" fill="currentColor" stroke="none" font-size="13">application</text>
+<text x="168" y="143" fill="currentColor" stroke="none" font-size="11" opacity="0.72">事前チェック</text>
+
+<rect x="150" y="186" width="220" height="46" rx="2" stroke="var(--accent)" stroke-width="1.6"/>
+<text x="168" y="207" fill="currentColor" stroke="none" font-size="13" font-weight="600">domain</text>
+<text x="168" y="223" fill="var(--accent)" stroke="none" font-size="11">Spring・JPAのimportが0</text>
+
+<line x1="260" y1="76" x2="260" y2="102" stroke="currentColor" stroke-width="1.2" marker-end="url(#le-a)"/>
+<line x1="260" y1="156" x2="260" y2="182" stroke="currentColor" stroke-width="1.2" marker-end="url(#le-a)"/>
+
+<path d="M396,196 C424,196 424,50 396,50" stroke="var(--alarm)" stroke-width="1.4" stroke-dasharray="5 5"/>
+<line x1="404" y1="112" x2="428" y2="136" stroke="var(--alarm)" stroke-width="1.6"/>
+<line x1="428" y1="112" x2="404" y2="136" stroke="var(--alarm)" stroke-width="1.6"/>
+<text x="440" y="118" fill="var(--alarm)" stroke="none" font-size="11">逆流はビルドが落ちる</text>
+<text x="440" y="134" fill="currentColor" stroke="none" font-size="11" opacity="0.72">ArchitectureTest</text>
+
+<rect x="150" y="254" width="220" height="34" rx="2" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+<text x="168" y="276" fill="currentColor" stroke="none" font-size="13">PostgreSQL — EXCLUDE制約</text>
+
+<path d="M120,120 C60,120 60,270 144,270" stroke="currentColor" stroke-width="1.2"
+      stroke-dasharray="4 4" marker-end="url(#le-a)"/>
+<text x="10" y="104" fill="currentColor" stroke="none" font-size="11" opacity="0.72">統合テストは</text>
+<text x="10" y="120" fill="currentColor" stroke="none" font-size="11" opacity="0.72">事前チェックを</text>
+<text x="10" y="136" fill="currentColor" stroke="none" font-size="11" opacity="0.72">迂回して直接書く</text>
+</svg><figcaption class="note" style="margin-top:0.7rem">依存は adapter から domain への一方向で、逆流はビルドが落ちる。統合テストは事前チェックを迂回し、データベースの制約だけで拒否されることを確かめる。</figcaption></figure>
+
 <p>ドメインパッケージは現在 Spring も JPA も1つもimportしていません。その状態が保たれるのは、
 破ると<strong>レビューで誰かが気づく必要ではなく、ビルドが赤くなる</strong>からです。</p>
 <h3>書いておいて一番よかった規則</h3>
@@ -337,7 +370,7 @@ classes().that().haveSimpleNameStartingWith("TestSupport")
 <strong>テストが強制する境界は真実であり続け、図が説明するだけの境界はそうならない。</strong>
 そして決められなかったことは、決める仕組みが無かったから決められなかった。</p>
 <footer>
-  <span>運用データ生成 2026-08-24 23:16</span>
+  <span>運用データ生成 2026-08-24 23:30</span>
   <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
   <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
