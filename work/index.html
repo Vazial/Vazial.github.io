@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="AI駆動開発の方法論に負荷をかけるための4プロジェクト。それぞれが実際に何であるかのラベル付き。">
+<meta name="description" content="本番稼働中の実務と、そこで決められなかったことを決められるようにするための仕事。実態のラベル付き。">
 <title>仕事 — Vazial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -185,6 +185,7 @@ th {
 }
 .tag.live { color: var(--accent); }
 .tag.study, .tag.wip { color: var(--muted); }
+.tag.work { color: var(--ink); }
 
 footer {
   border-top: 1px solid var(--rule);
@@ -203,15 +204,24 @@ footer a { color: var(--muted); }
 <div class="sheet">
 <nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/" aria-current="page">仕事</a><a href="/case/reservation/">ケース: 設計手順</a><a href="/case/harvest/">ケース: 収穫ループ</a><a href="/data/">運用データ</a></nav>
 <p><span class="eyebrow">仕事</span></p>
-<h1>4つのプロジェクトと、それぞれの役目</h1>
+<h1>実務と、そこから作ったもの</h1>
 <p class="lede">
-これは4つの製品ではありません。<strong>4つの異なる形の問題</strong>で、
-方法論がどこで持ちこたえ、どこで破れるかを見るために使っています。
-それぞれに「実際に何であるか」を書いています。学習用のものを稼働中のサービスとして見せるのは、
-どちらの見せ方より悪いからです。
+最初の1つは実務で、残りは方法論に負荷をかけるためのものです。
+それぞれに「実際に何であるか」を書いています。<strong>学習用のものを稼働中のサービスとして
+見せるのは、どちらの見せ方より悪い</strong>からです。
 </p>
-<p>4つとも <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a> の
+<p>実務以外は <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a> の
 <code>projects/</code> の下に、それが従った規程と並んで置いてあります。</p>
+<hr>
+<h2>予約・受付システム <span class="tag work">実務・本番稼働中</span></h2>
+<p>社内向けの予約・受付システム。<strong>7人のチームに初期メンバーとして参加</strong>し、
+要件定義の補助から、技術選定・開発環境構築・画面モック・実装設計・単体テストまで担当しました。
+Vue 3 + Tailwind CSS + C#/.NET。<strong>現在も本番で動いています。</strong></p>
+<p>ここで自分が潰しきれなかった問い——キャンセルをどう記録するか、予約の重複をどう守るか、
+入退室履歴をどう持つか——が、DB設計の段階で他のメンバーのモデリングによって表に出ました。
+以降の仕事はすべて、<strong>そこで決められなかったことを決められるようにするため</strong>のものです。</p>
+<p>コードは公開できません。何が起きて何をそこから作ったかは
+<a href="/case/reservation/">ケーススタディ</a>に書いています。</p>
 <hr>
 <h2>テンプレート本体</h2>
 <p>言語に依存しない土台です。信条11条、コンテキストを分離した5つの役割agent、5段の検証、
@@ -223,7 +233,7 @@ footer a { color: var(--muted); }
 <p><a href="https://github.com/Vazial/ai-driven-dev-template">リポジトリ →</a></p>
 <hr>
 <h2>Session Radar <span class="tag live">稼働中</span></h2>
-<p>4つのうち<strong>実際に動いているのはこれだけ</strong>です。毎朝08:00（JST）にGitHub Actionsのスケジュールが
+<p>個人で作ったもののうち<strong>実際に動いているのはこれだけ</strong>です。毎朝08:00（JST）にGitHub Actionsのスケジュールが
 発火し、connpass APIからイベントを取得、リポジトリ内のYAMLに書いた興味条件で絞り込み、
 Discordへ1通のダイジェストを届けます。画面も永続ストアも持たず、外部I/Oは取得と配信の2つだけ。
 配信先は <code>NotifierPort</code> の背後にあるので差し替えられます。</p>
@@ -232,7 +242,7 @@ Discordへ1通のダイジェストを届けます。画面も永続ストアも
 私が手を入れなくても動き続けているという点です。</p>
 <hr>
 <h2>Dining Radar <span class="tag wip">作り込み中</span></h2>
-<p>4つの中で最も手を入れたプロジェクトで、方法論を一番すり減らしました——
+<p>個人プロジェクトの中で最も手を入れたもので、方法論を一番すり減らしました——
 <strong>ADR 26本、frictionログ 26件</strong>。決定1つにつき記録された失敗が1つ、という比率です。
 限られた範囲から食事場所を探すDjangoのパイプライン。</p>
 <p>まだ改善中で、デプロイしていません。ここでの価値は<strong>反復回数</strong>です。テンプレートがどこで
@@ -240,17 +250,20 @@ Discordへ1通のダイジェストを届けます。画面も永続ストアも
 公開リポジトリから外した判断と、その後の発見——<strong>プロジェクト名を変えても、既に広がった先からは
 名前が消えていなかった</strong>——も含みます。</p>
 <hr>
-<h2>会議室予約 — バックエンド <span class="tag study">学習用</span></h2>
-<p>ドメイン駆動設計を通しで練習するために作りました。EventStorming から集約境界・並行制御・
-状態のモデリングを経て、Java 21 と Spring Boot へ。ADR 8本と Gherkin の受け入れシナリオ。</p>
-<p><strong>作り込んでおらず、運用する予定もありません。</strong> ここで示せるのは製品ではなく<strong>技術実践</strong>です。
+<h2>会議室予約 — バックエンド <span class="tag study">実務の振り返り</span></h2>
+<p>上の実務で答えられなかった問いを、<strong>同じ形のドメインを別の言語で組み直して答え直した</strong>もの。
+EventStorming から集約境界・並行制御・状態のモデリングを経て、Java 21 と Spring Boot へ。
+ADR 8本と Gherkin の受け入れシナリオ。</p>
+<p><strong>作り込んでおらず、運用する予定もありません。</strong> 本番で動いているのは実務の側で、
+こちらはその事後分析です。ここで示せるのは製品ではなく<strong>技術実践</strong>——
 ドメイン層はフレームワークのimportを1つも持たず、そのことをテストが強制しています。
-二重予約はモックではなく実PostgreSQLの制約で検証しています。受け入れテストは
-DSL層で実装から隔てています。</p>
+二重予約はモックではなく実PostgreSQLの制約で検証しています。</p>
+<p>3つの問いのうち<strong>2つに答え、1つ（入退室履歴）には答えていません。</strong></p>
 <p><a href="/case/reservation/">ケーススタディを読む →</a></p>
 <hr>
-<h2>会議室予約 — フロントエンド <span class="tag study">学習用</span></h2>
-<p>上の対になるもので、<strong>契約先行の考えが本当に試された場所</strong>です。API型はOpenAPI文書から
+<h2>会議室予約 — フロントエンド <span class="tag study">実務の振り返り</span></h2>
+<p>実務では<strong>モックをViewと分離できず、本実装へ流用するのに手間がかかりました</strong>。
+ここはその作り直しで、<strong>契約先行の考えが本当に試された場所</strong>です。API型はOpenAPI文書から
 生成しているので、手で写した型が契約から静かにずれることがありません。各エンドポイントは
 モックと実バックエンドを<strong>個別に</strong>切り替えられるので、空き確認・予約・キャンセルのループを
 一括結合なしに閉じられました。</p>
@@ -261,7 +274,7 @@ DSL層で実装から隔てています。</p>
 現在を代表しません。進行中の2つはprivateです（株式スクリーナーと、同じテンプレートで作っている
 ゲーム群）。</p>
 <footer>
-  <span>運用データ生成 2026-08-24 07:50</span>
+  <span>運用データ生成 2026-08-24 12:54</span>
   <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
   <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="会議室予約のドメインをJava 21とSpring Bootへ。層の境界を規約ではなくテストで強制する。">
-<title>Javaでの設計手順</title>
+<meta name="description" content="実務で答えられなかった3つの問いを、同じドメインで設計から作り直して答え直す。Java 21 / Spring Boot。">
+<title>答えられなかった問いに、答え直す</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;600&display=swap">
@@ -185,6 +185,7 @@ th {
 }
 .tag.live { color: var(--accent); }
 .tag.study, .tag.wip { color: var(--muted); }
+.tag.work { color: var(--ink); }
 
 footer {
   border-top: 1px solid var(--rule);
@@ -203,19 +204,32 @@ footer a { color: var(--muted); }
 <div class="sheet">
 <nav class="nav"><a href="/" class="home">Vazial</a><a href="/work/">仕事</a><a href="/case/reservation/" aria-current="page">ケース: 設計手順</a><a href="/case/harvest/">ケース: 収穫ループ</a><a href="/data/">運用データ</a></nav>
 <p><span class="eyebrow">ケーススタディ · Java 21 · Spring Boot</span></p>
-<h1>テストが守れる境界</h1>
+<h1>答えられなかった問いに、答え直す</h1>
 <p class="lede">
-会議室予約システムを、EventStorming から集約境界・並行制御を経て動くJavaのサービスまで通しました。
-<strong>手順を練習するために作ったもので、作り込んでおらず運用もしていません。</strong>
-ここで示せるのは技術実践であり、その主張に製品は要りません——要るのはテストで、
-それがこの話の全部です。
+社内向けの予約・受付システムを7人のチームの初期メンバーとして作りました。現在も本番稼働中です。
+そこで私は<strong>フィジビリティ検証を担当しながら、いくつかの問いを潰しきれませんでした</strong>。
+それがDB設計の段階で表に出て、他のメンバーのモデリングによって洗い出されました。
+このプロジェクトは、その問いを自分で答え直したものです。ドメインは同じ形、言語は別。
 </p>
 <p><a href="https://github.com/Vazial/ai-driven-dev-template/tree/main/projects/reservation-system">ソース</a>
 · Javaファイル89本 · ADR 8本 · Gherkinの受け入れシナリオ</p>
 <hr>
-<h2>キャンセルは状態ではなく事実</h2>
-<p>最初の本格的なモデリング判断です。キャンセルされた予約は、誰かがセットした「キャンセル状態」に
-あるのではありません。<strong>ある時点で何かが起きた</strong>のであって、状態はそこから導く結論です。</p>
+<h2>潰しきれなかった3つの問い</h2>
+<p>DB設計の検討に入った時点で、決まっていなければならないのに決まっていなかったものが出てきました。</p>
+<ul>
+<li><strong>入退室履歴はどう持つのか</strong></li>
+<li><strong>キャンセルはどう記録するのか</strong></li>
+<li><strong>予約の重複はどう守るのか</strong></li>
+</ul>
+<p>どれも「実装しやすい形にするために先に方向を決めておく」種類の問いです。
+フィジビリティ検証は私の担当でしたが、<strong>そこまで見通せていませんでした</strong>。
+結果として、他のメンバーがDBをモデリングする過程で洗い出してもらう形になりました。</p>
+<p>正直に書くと、あの時点の自分に妥当なモデリングができたとは思っていません。
+他人の設計が自分の見落としを炙り出した、というのが起きたことです。</p>
+<p>このページは、そのうち<strong>2つに答えた記録</strong>です。3つ目には答えていません。</p>
+<h2>キャンセルはどう記録するのか</h2>
+<p>キャンセルされた予約は、誰かがセットした「キャンセル状態」にあるのではありません。
+<strong>ある時点で何かが起きた</strong>のであって、状態はそこから導く結論です。</p>
 <p>だから保存するのは <code>cancelledAt</code> だけ。状態は導出し、導出は1箇所にしか置きません。</p>
 <p><code>java
 /** cancelledAt の有無から状態を導出する唯一の場所。 */
@@ -225,32 +239,12 @@ public static ReservationStatus of(LocalDateTime cancelledAt) {
 <p>コードより重要なのはクラスのドキュメントに書いた規則です——
 <strong>他のどのクラスも <code>cancelledAt</code> を直接見て「キャンセル済みか」を判定してはならない</strong>。</p>
 <p>同じ問いに真実の源が2つあると、状態モデルはそこから腐ります。ある呼び出し側はタイムスタンプを見て、
-別の側は列挙を見て、いずれ食い違う。</p>
-<h2>層の境界は「合意」ではなく「強制」する</h2>
-<p>ヘキサゴナルの層は、描くのは簡単で破るのも簡単です。誰かがドメインオブジェクトの中に
-リポジトリを必要として、importを1行足す。それで図は静かに真実でなくなります。</p>
-<p>だから方向を<strong>テスト</strong>にしました。<code>ArchitectureTest</code> は、ドメインがフレームワークを
-知った時点でビルドを落とします。</p>
-<p><code>java
-noClasses().that().resideInAPackage("reservation.domain..")
-        .should().dependOnClassesThat().resideInAnyPackage(
-                "reservation.application..", "reservation.adapter..",
-                "org.springframework..", "jakarta..", "javax..");</code></p>
-<p>ドメインパッケージは現在 Spring も JPA も1つもimportしていません。そしてその状態が保たれるのは、
-破ると<strong>レビューで誰かが気づく必要ではなく、ビルドが赤くなる</strong>からです。
-さらに2本の規則で <code>application</code> を <code>adapter</code> から引き離し、層の順序を一方向に固定しています。</p>
-<h3>書いておいて一番よかった規則</h3>
-<p>受け入れテストには、動いているシステムへの継ぎ目が要ります。時計を進めるとか、データを仕込むとか。
-<strong>その継ぎ目は裏口で、裏口は出荷されます。</strong></p>
-<p><code>java
-classes().that().haveSimpleNameStartingWith("TestSupport")
-        .should().beAnnotatedWith(Profile.class)</code></p>
-<p>テスト支援のクラスは Spring のプロファイルで隔離されていなければならない。3行です。
-これで「なぜこのエンドポイントが本番に入っているのか」という事故が丸ごと一種類消えます。</p>
-<h2>最後の防衛線はデータベース</h2>
-<p>二重予約は並行性の問題で、アプリケーション層のチェックでは解けません。<strong>2つのリクエストが
-どちらも書き込む前にチェックを通過しうる</strong>からです。実際の保証は、部屋と時間帯に掛けた
-PostgreSQL の <code>EXCLUDE</code> 制約です。</p>
+別の側は列挙を見て、いずれ食い違う。「状態を持つか、事実を持つか」を先に決めておけば、
+DB設計の段階で議論する必要はありませんでした。</p>
+<h2>予約の重複はどう守るのか</h2>
+<p>これは並行性の問題で、<strong>アプリケーション層のチェックでは解けません</strong>。
+2つのリクエストがどちらも書き込む前にチェックを通過しうるからです。
+実際の保証は、部屋と時間帯に掛けた PostgreSQL の <code>EXCLUDE</code> 制約です。</p>
 <p>面白いのは検証の仕方です。テストは<strong>アプリケーション層のチェックを意図的に迂回</strong>して
 リポジトリのポートへ直接書き込みます。証明したいのが制約単体の働きだからです。</p>
 <blockquote>
@@ -260,24 +254,90 @@ PostgreSQL の <code>EXCLUDE</code> 制約です。</p>
 <p>実行先は Testcontainers の<strong>実PostgreSQL</strong>で、インメモリの代用品ではありません。
 H2で代用していたら重なりをそのまま受け入れ、<strong>保証が存在しないままテストは通っていた</strong>はずです。
 境界で接するだけの隣接予約は許可されることも検証しています。時間帯のoff-by-oneはそこに住むからです。</p>
+<h2>入退室履歴はどう持つのか — 未着手</h2>
+<p>3つ目には答えていません。このプロジェクトのドメインは予約までで、入退室のイベントを扱っていません。</p>
+<p>書いておく理由は、<strong>答えた2つと答えていない1つを区別しない書き方は信用できない</strong>からです。
+残っています。</p>
+<hr>
+<h2>実務で決められなかったことを、決める仕組みにした</h2>
+<p>問い自体より、<strong>なぜ決められなかったか</strong>の方が尾を引きました。</p>
+<p>当時の私は技術選定と環境構築も主導していました。Vue 3・Tailwind CSS・C#/.NET という選定の決め手は
+<strong>「社内に馴染みがある」</strong>で、それ以外の根拠を持っていませんでした。
+そして決めた時点では、根拠が無いことに気づいていませんでした。</p>
+<p>問題は選定そのものより、<strong>判断が妥当だったかを後から検証できないこと</strong>です。
+認証も同じで、Azure との SSO の経験が無いまま JWT で認証して保存する形にしました。
+他の方式を検討していないので、それが妥当だったのか今も言えません。</p>
+<p>いま使っているテンプレートが持っている規程は、ここから来ています。</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>当時起きたこと</th>
+<th>いま規程になっていること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>選定の根拠が「馴染みがある」だけだった</td>
+<td>選定は<strong>軸で比較し、ADRに残す</strong></td>
+</tr>
+<tr>
+<td>層の分離をAPI境界だけに頼った</td>
+<td>依存方向を<strong>ArchUnitで機械強制</strong>する</td>
+</tr>
+<tr>
+<td>決めるべきことが実装段階まで残った</td>
+<td><strong>契約を先に承認</strong>し、実装より先にmainへ入れられる</td>
+</tr>
+<tr>
+<td>認証方式を比較せずに決めた</td>
+<td>案を並べて選び、<strong>採用しなかった案も記録</strong>する</td>
+</tr>
+</tbody>
+</table></div>
+<h2>層の境界は「合意」ではなく「強制」する</h2>
+<p>実務ではDDDを使えず、APIで分離するところまでしかいきませんでした。
+API境界は物理的な分離であって、<strong>内側の構造は何も保証しません</strong>。</p>
+<p>ヘキサゴナルの層は、描くのは簡単で破るのも簡単です。誰かがドメインオブジェクトの中に
+リポジトリを必要として、importを1行足す。それで図は静かに真実でなくなります。</p>
+<p>だから方向を<strong>テスト</strong>にしました。<code>ArchitectureTest</code> は、ドメインがフレームワークを
+知った時点でビルドを落とします。</p>
+<p><code>java
+noClasses().that().resideInAPackage("reservation.domain..")
+        .should().dependOnClassesThat().resideInAnyPackage(
+                "reservation.application..", "reservation.adapter..",
+                "org.springframework..", "jakarta..", "javax..");</code></p>
+<p>ドメインパッケージは現在 Spring も JPA も1つもimportしていません。その状態が保たれるのは、
+破ると<strong>レビューで誰かが気づく必要ではなく、ビルドが赤くなる</strong>からです。</p>
+<h3>書いておいて一番よかった規則</h3>
+<p>受け入れテストには、動いているシステムへの継ぎ目が要ります。時計を進めるとか、データを仕込むとか。
+<strong>その継ぎ目は裏口で、裏口は出荷されます。</strong></p>
+<p><code>java
+classes().that().haveSimpleNameStartingWith("TestSupport")
+        .should().beAnnotatedWith(Profile.class)</code></p>
+<p>テスト支援のクラスは Spring のプロファイルで隔離されていなければならない。3行です。
+これで「なぜこのエンドポイントが本番に入っているのか」という事故が丸ごと一種類消えます。</p>
 <h2>実装より先に契約</h2>
-<p>OpenAPI文書が真実の源であって、後から書いた説明ではありません。フロントエンド側はそこから
-API型を生成しているので、クライアントがビルドに気づかれずに契約からずれることがありません。</p>
+<p>実務ではモックを作りましたが、<strong>Viewと分離できておらず、本実装へ流用するのに手間がかかりました</strong>。
+モックが「捨てるもの」でも「育てるもの」でもない中途半端な位置にいたからです。</p>
+<p>ここではOpenAPI文書を真実の源にしました。フロントエンド側はそこからAPI型を生成しているので、
+クライアントがビルドに気づかれずに契約からずれることがありません。
+<a href="/work/">フロントエンド側</a>はエンドポイントごとにモックと実バックエンドを個別に切り替えられ、
+モックは捨てずに<strong>契約の別実装として残ります</strong>。</p>
 <p>受け入れシナリオは、それを満たすコードより<strong>先に</strong>mainへ入れられます。
-<code>@pending-implementation</code> を付けて既定の実行から外す仕組みです。</p>
-<p>些細に見えて、そうではありません。<strong>「何が正しいか」を、それ自体レビュー可能な変更として
-合意しマージできる</strong>ということです。答えを既に前提した実装と融合した状態で届くのではなく。</p>
-<p>受け入れテストは専用のGradle source setに置き、step定義とアサーションの間にDSL層を挟んでいます。
-シナリオがHTTP呼び出しではなくドメインの言葉で読めるようにするためです。</p>
+<code>@pending-implementation</code> を付けて既定の実行から外す仕組みです。
+「何が正しいか」を、それ自体レビュー可能な変更として合意しマージできる——
+実務で実装段階まで残ってしまった判断を、前倒しするための仕掛けです。</p>
 <h2>これが示していないこと</h2>
-<p>学習用なので、限界を正直に書いておきます。</p>
 <p>デプロイはなく、認証もなく、テストが生む以上の負荷もかかっておらず、運用履歴もありません。
 <strong>実際の利用の下で保守されたことも、実ユーザーの圧力の下で変更されたこともありません。</strong>
-並行性の保証はDBレベルでは証明していますが、本物の競合に遭ったことはありません。</p>
-<p>ここから持ち帰るものは「予約システムが作れる」より狭く、そして有用です——
-<strong>テストが強制する境界は真実であり続け、図が説明するだけの境界はそうならない。</strong></p>
+並行性の保証はDBレベルでは証明していますが、本物の競合に遭ったことはありません。
+入退室履歴の問いには、前述のとおり答えていません。</p>
+<p>本番で動いているのは実務の側で、こちらはその振り返りです。順序を逆にして読まれると困ります。</p>
+<p>持ち帰ったものは「予約システムが作れる」より狭く、そして有用でした——
+<strong>テストが強制する境界は真実であり続け、図が説明するだけの境界はそうならない。</strong>
+そして決められなかったことは、決める仕組みが無かったから決められなかった。</p>
 <footer>
-  <span>運用データ生成 2026-08-24 07:50</span>
+  <span>運用データ生成 2026-08-24 12:54</span>
   <span>出典: <a href="https://github.com/Vazial/ai-driven-dev-template">ai-driven-dev-template</a>
   · <a href="https://github.com/Vazial">github.com/Vazial</a></span>
   <span lang="en">Written in Japanese. Summary in English on the <a href="/">front page</a>.</span>
