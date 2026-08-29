@@ -380,14 +380,14 @@ figcaption { max-width: 62ch; }
     都合の悪い数値もそのまま置いています——<strong>常に自分に同意する測定は、測定ではない</strong>からです。
   </p>
   <p class="note">
-    2026-05-30 〜 2026-08-28
+    2026-05-30 〜 2026-08-29
     · 主に claude-sonnet-5 / claude-opus-5 / claude-opus-4-8
   </p>
 </header>
 
 <section>
   <h2>規模</h2>
-  <div class="figures"><div class="figure"><b>5</b><span>プロジェクト</span><i></i></div><div class="figure"><b>81</b><span>セッション</span><i></i></div><div class="figure"><b>785</b><span>コミット</span><i></i></div><div class="figure"><b>355</b><span>プルリクエスト</span><i></i></div><div class="figure"><b>932</b><span>人間の指示</span><i></i></div></div>
+  <div class="figures"><div class="figure"><b>5</b><span>プロジェクト</span><i></i></div><div class="figure"><b>81</b><span>セッション</span><i></i></div><div class="figure"><b>846</b><span>コミット</span><i></i></div><div class="figure"><b>369</b><span>プルリクエスト</span><i></i></div><div class="figure"><b>972</b><span>人間の指示</span><i></i></div></div>
   <p class="note annot">
     「人間の指示」は人が実際にタイプしたものだけを数えています。ツールの実行結果や通知は
     同じ経路を通りますが発話ではないので除外しました。混同すると数字が約3倍に膨らみます。
@@ -397,11 +397,11 @@ figcaption { max-width: 62ch; }
 <section>
   <h2>検証はゲートとして働いているか</h2>
   <p>
-    802 回のうち 98.0% が通り、16 件が落ちました。
+    802 回のうち 97.8% が通り、18 件が落ちました。
     合格率が高いこと自体は何も証明しません。重要なのは<strong>検査が実際に落ちている</strong>ことです。
     一度も何も止めたことのないゲートは飾りです。
   </p>
-  <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:98.54%"></i><i class="ng" style="width:1.46%"></i></span><span class="count">412 run・失敗 6</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:96.70%"></i><i class="ng" style="width:3.30%"></i></span><span class="count">182 run・失敗 6</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">114 run</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:97.37%"></i><i class="ng" style="width:2.63%"></i></span><span class="count">76 run・失敗 2</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">16 run</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:0.00%"></i><i class="ng" style="width:100.00%"></i></span><span class="count">2 run・失敗 2</span></div></div>
+  <div class="tape-list"><div class="tape-row"><span class="name">L0 govlint</span><span class="tape"><i class="ok" style="width:98.51%"></i><i class="ng" style="width:1.49%"></i></span><span class="count">402 run・失敗 6</span></div><div class="tape-row"><span class="name">CI dining-radar</span><span class="tape"><i class="ok" style="width:95.29%"></i><i class="ng" style="width:4.71%"></i></span><span class="count">170 run・失敗 8</span></div><div class="tape-row"><span class="name">ADR採番の衝突検査</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">134 run</span></div><div class="tape-row"><span class="name">CI connpass-session-radar</span><span class="tape"><i class="ok" style="width:97.37%"></i><i class="ng" style="width:2.63%"></i></span><span class="count">76 run・失敗 2</span></div><div class="tape-row"><span class="name">connpass-session-radar 日次配信</span><span class="tape"><i class="ok" style="width:100.00%"></i><i class="ng" style="width:0.00%"></i></span><span class="count">18 run</span></div><div class="tape-row"><span class="name">(other)</span><span class="tape"><i class="ok" style="width:0.00%"></i><i class="ng" style="width:100.00%"></i></span><span class="count">2 run・失敗 2</span></div></div>
   <p class="note annot">
     <code>L0 govlint</code> は規程そのものを検査するもので、全プロジェクトのプルリクエストに掛かります。
   </p>
@@ -413,11 +413,11 @@ figcaption { max-width: 62ch; }
     各役割は自分のコンテキストを持つ別々のagentとして走ります。受け入れテストを書くagentは
     実装を見ず、監査役は結果を独立に導き直します。
   </p>
-  <div class="roles"><div class="roles-row"><span class="name"><b>契約</b> <em>architect</em></span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="count">68 回 · ツールエラー 6.2%</span></div><div class="roles-row"><span class="name"><b>画面</b> <em>designer</em></span><span class="track"><span class="fill" style="width:16.2%"></span></span><span class="count">11 回 · ツールエラー 4.4%</span></div><div class="roles-row"><span class="name"><b>実装</b> <em>developer</em></span><span class="track"><span class="fill" style="width:80.9%"></span></span><span class="count">55 回 · ツールエラー 3.1%</span></div><div class="roles-row"><span class="name"><b>受け入れテスト</b> <em>tester</em></span><span class="track"><span class="fill" style="width:39.7%"></span></span><span class="count">27 回 · ツールエラー 2.2%</span></div><div class="roles-row"><span class="name"><b>独立監査</b> <em>reviewer</em></span><span class="track"><span class="fill" style="width:20.6%"></span></span><span class="count">14 回 · ツールエラー 3.1%</span></div></div>
+  <div class="roles"><div class="roles-row"><span class="name"><b>契約</b> <em>architect</em></span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="count">74 回 · ツールエラー 6.2%</span></div><div class="roles-row"><span class="name"><b>画面</b> <em>designer</em></span><span class="track"><span class="fill" style="width:16.2%"></span></span><span class="count">12 回 · ツールエラー 4.2%</span></div><div class="roles-row"><span class="name"><b>実装</b> <em>developer</em></span><span class="track"><span class="fill" style="width:87.8%"></span></span><span class="count">65 回 · ツールエラー 3.0%</span></div><div class="roles-row"><span class="name"><b>受け入れテスト</b> <em>tester</em></span><span class="track"><span class="fill" style="width:40.5%"></span></span><span class="count">30 回 · ツールエラー 2.3%</span></div><div class="roles-row"><span class="name"><b>独立監査</b> <em>reviewer</em></span><span class="track"><span class="fill" style="width:21.6%"></span></span><span class="count">16 回 · ツールエラー 2.9%</span></div></div>
   <blockquote>
     <p>
       <strong>後段の役割ほど起動が減っています。</strong>
-      契約 68 回に対して監査 14 回——
+      契約 74 回に対して監査 16 回——
       監査の段が、自分で決めた規程が求めるほどには回っていません。
     </p>
     <p class="note">
@@ -434,13 +434,13 @@ figcaption { max-width: 62ch; }
       <tr><th>指標</th><th>値</th><th>内訳</th></tr>
       <tr>
         <td>プルリクエストのマージ率</td>
-        <td>95.5%</td>
-        <td class="note">339 本がマージ</td>
+        <td>95.1%</td>
+        <td class="note">351 本がマージ</td>
       </tr>
       <tr>
         <td>作成からマージまで（中央値）</td>
         <td>0.39 時間</td>
-        <td class="note">p90 12.91 時間 · 最長 521.98 時間</td>
+        <td class="note">p90 12.73 時間 · 最長 521.98 時間</td>
       </tr>
       <tr>
         <td>プルリクエストの大きさ（中央値）</td>
@@ -449,10 +449,10 @@ figcaption { max-width: 62ch; }
       </tr>
       <tr>
         <td>手戻り</td>
-        <td>7.9%</td>
+        <td>8.8%</td>
         <td class="note">
-          fix / revert 60 件 ÷
-          接頭辞を持つ 758 コミット
+          fix / revert 72 件 ÷
+          接頭辞を持つ 819 コミット
           （全コミットの 97% が接頭辞を持つ）
         </td>
       </tr>
@@ -482,7 +482,7 @@ figcaption { max-width: 62ch; }
 
 <dl class="titleblock">
   <div><dt>Title</dt><dd class="name">AI駆動開発 — 運用記録</dd></div>
-  <div><dt>Generated</dt><dd>2026-08-28 23:31</dd></div>
+  <div><dt>Generated</dt><dd>2026-08-29 23:30</dd></div>
   <div><dt>Source</dt><dd>log · git · CI</dd></div>
   <div><dt>Sheet</dt><dd>5 / 5</dd></div>
 </dl>
